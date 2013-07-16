@@ -6,8 +6,7 @@ import cPickle
 import matplotlib.pyplot as plt
 
 halonum = 0
-nhalos = 13
-#nhalos = 1
+nhalos = 12
 YEAR = 3.155693e+7 #s/yr
 
 pf = load('/u/10/l/lnc2115/home/WiseSims/DD0062/output_0062')
@@ -41,6 +40,7 @@ fillFactors = array([0.,0.,0.,0.,0.,0.,0.])
 avgRadius = [0.]
 maxRadius = [0.]
 minRadius = [0.]
+zcutRadius = [0.]
 #SFR quantities
 sfrAvg = [0.]
 sfrMax = [0.]
@@ -83,8 +83,6 @@ while (halonum < nhalos):
 	#num_tot = len(master_clump.children)-1
 	centers = vstack((centers,center))
 	rvirs = append(rvirs,radius)
-	#print centers
-	#print rvirs
 	#need to loop through the lowest clumps to find which has the smallest offset from the center of the halo
 	num = 0
 	comparing = 1e9
@@ -93,11 +91,7 @@ while (halonum < nhalos):
 	while (num < len(all_clumps)):
 		holder = all_clumps[num].quantities['CenterOfMass']()
 		offsets_temp = (((holder[0]-center[0])**2.0+(holder[1]-center[1])**2.0+(holder[2]-center[2])**2.0)**0.5)*pf['kpc']
-	#	print, num, offsets_temp
 		if (offsets_temp < comparing):
-#			print 'resetting values: ',offsets_temp
-#			print 'and the index is: ',num
-#			print 'resetting inside'
 			comparing = copy(offsets_temp)
 			index = copy(num)
 		num = num + 1
@@ -128,21 +122,10 @@ while (halonum < nhalos):
 		loopthrough = loopthrough + 1
 	fillFactors = vstack((fillFactors,fillFactorsTemp))
 
-	#sm = all_clumps[index]['ParticleMassMsun']
-	#ct = all_clumps[index]['creation_time']
-	#stars = (ct > 0)
-	#ct = ct[stars]
-	#sm = sm[stars]
-	
-	#if (len(stars[where(stars==True)]) == 0):
-	#	sfrAvg = append(sfrAvg,0.0)
-	#	sfrMax = append(sfrMax,0.0)
-	#	t_start_here = 0.0
-	#else:
-	#	sfr = StarFormationRate(pf,star_mass=sm,star_creation_time=ct,volume=total_volume)
-	#	sfrAvg = append(sfrAvg,average(sfr.Msol_yr))
-	#	sfrMax = append(sfrMax,sfr.Msol_yr.max())
-	#	t_start = append(t_start,min(ct))
+	goodvalue = 1e-6
+	indices = where(metallicities >= goodvalue)
+	zcutRadius = append(zcutRadius,all_clumps[index]['Radius'][indices].max())
+
 
 	halonum = halonum + 1
 	loopthrough = 0
@@ -163,6 +146,7 @@ sfrAvg = delete(sfrAvg,0)
 sfrMax = delete(sfrMax,0)
 clump_index = delete(clump_index,0)
 t_start = delete(t_start,0)
+zcutRadius = delete(zcutRadius,0)
 
 #create and pickle the recarray for easy loading
 data = {}
@@ -180,6 +164,7 @@ data['sfrAvg'] = sfrAvg
 data['sfrMax'] = sfrMax
 data['clump_index'] = clump_index
 data['t_start'] = t_start
+data['zcutRadius'] = zcutRadius
 
 fileout = 'clump_dict30.cpkl'
 cPickle.dump(data,open(fileout,'wb'),protocol=-1)

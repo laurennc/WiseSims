@@ -9,8 +9,8 @@ halonum = 0
 nhalos = 12
 YEAR = 3.155693e+7 #s/yr
 
-pf = load('/u/10/l/lnc2115/home/WiseSims/DD0062/output_0062')
-halos = readhalos(foffile='groups_02797.dat')
+pf = load('/u/10/l/lnc2115/home/WiseSimsData/DD0062/output_0062')
+halos = readhalos(foffile='/u/10/l/lnc2115/home/WiseSimsData/groups_02797.dat')
 field = 'Metallicity'
 step = 2.0
 c_min = 1.0e-17
@@ -52,7 +52,7 @@ while (halonum < nhalos):
 	print 'Analyzing halo number: ',halonum
 
 	radius, mass, center = r200(pf, halos['pos'][halonum,:],halos['mass'][halonum],verbose=False)
-	filein = 'halo'+str(halonum)+'_clumps30.cpkl'
+	filein = '../WiseSimsData/pickles/halo'+str(halonum)+'_clumps30.cpkl'
 	data = cPickle.load(open(filein,'rb'))
 	master_clump = data[1]
 	
@@ -123,8 +123,8 @@ while (halonum < nhalos):
 	fillFactors = vstack((fillFactors,fillFactorsTemp))
 
 	goodvalue = 1e-6
-	indices = where(metallicities >= goodvalue)
-	zcutRadius = append(zcutRadius,all_clumps[index]['Radius'][indices].max())
+	indices = where(all_clumps[index]['Metallicity'] >= goodvalue)
+	zcutRadius = append(zcutRadius,all_clumps[index]['Radius'][indices].max()*pf['kpc']/pf['cm'])
 
 
 	halonum = halonum + 1

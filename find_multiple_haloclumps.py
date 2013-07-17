@@ -9,7 +9,7 @@ halos_to_run = [22, 25, 26, 28, 33]
 
 count = 0
 
-pf = load('/u/10/l/lnc2115/home/WiseSims/DD0062/output_0062')
+pf = load('/u/10/l/lnc2115/home/WiseSimsData/DD0062/output_0062')
 halos = readhalos(foffile='/u/10/l/lnc2115/home/WiseSimsData/groups_02797.dat')
 
 while (count < len(halos_to_run)):

@@ -6,7 +6,7 @@ import cPickle
 import matplotlib.pyplot as plt
 
 halonum = 0
-nhalos = 12
+nhalos = 11
 YEAR = 3.155693e+7 #s/yr
 
 pf = load('/u/10/l/lnc2115/home/WiseSimsData/DD0062/output_0062')
@@ -80,7 +80,7 @@ while (halonum < nhalos):
                t_start = append(t_start,t_start_here)
 	
 
-	#num_tot = len(master_clump.children)-1
+	num_tot = len(master_clump.children)-1
 	centers = vstack((centers,center))
 	rvirs = append(rvirs,radius)
 	#need to loop through the lowest clumps to find which has the smallest offset from the center of the halo
@@ -124,8 +124,12 @@ while (halonum < nhalos):
 
 	goodvalue = 1e-6
 	indices = where(all_clumps[index]['Metallicity'] >= goodvalue)
-	zcutRadius = append(zcutRadius,all_clumps[index]['Radius'][indices].max()*pf['kpc']/pf['cm'])
-
+	if (len(indices) > 0):
+		print all_clumps[index]['Radius'][indices].max()*pf['kpc']/pf['cm']
+		zcutRadius = append(zcutRadius,all_clumps[index]['Radius'][indices].max()*pf['kpc']/pf['cm'])
+	else:
+		zcutRadius = append(zcutRadius,0.0)
+		print average(all_clumps[index]['Metallicity'][indices])
 
 	halonum = halonum + 1
 	loopthrough = 0

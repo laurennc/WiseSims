@@ -15,6 +15,11 @@ def clump_contours(pf,center,radius,field,dim,clump,width,fileout,plottype):
 	radius = radius/pf['cm']	
 
 	pc = PlotCollection(pf,center=center)
+	
+	#zlim = {"Density": (1e-27, 1e-22), "Metallicity":()}	
+	if field == 'Density':
+		pc.set_zlim(1e-27,1e-22)
+
 	if (plottype == 'proj'):
 		pc.add_projection(field,dim)
 	elif (plottype == 'slice'):
@@ -25,10 +30,9 @@ def clump_contours(pf,center,radius,field,dim,clump,width,fileout,plottype):
 	clump_plot = [clump]
 	pc.plots[0].modify['clumps'](clump_plot)
 	pc.plots[0].modify['point'](center,'o')
-	#pc.plots[0].modify['point'](all_clumps[1].quantities['CenterOfMass'](),'x')
 	pc.plots[0].modify['point'](clump.quantities['CenterOfMass'](),'x')
 	pc.plots[0].modify['sphere'](center,radius)
-	#pc.set_cmap('cool')
+	pc.set_cmap('spectral')
 	pc.save(fileout)
 	return True
 
@@ -61,6 +65,7 @@ def sfh_plot(sfr,fileout):
 	plt.yscale('log')
 	plt.xlabel('Lookback Time (yrs)')
 	plt.ylabel('SFR (Msol/yr)')
+	plt.ylim(1.0e-5,1.0)
 	plt.savefig(fileout)
 	plt.close()
 	return True

@@ -5,7 +5,7 @@ from yt.analysis_modules.level_sets.api import *
 from myanyl import *
 import cPickle
 
-halos_to_run = [22, 25, 26, 28, 33]
+halos_to_run = [59, 188, 362, 900]
 
 count = 0
 

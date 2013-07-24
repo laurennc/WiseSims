@@ -5,8 +5,6 @@ from myanyl import *
 import cPickle
 import matplotlib.pyplot as plt
 
-halonum = 0
-nhalos = 11
 YEAR = 3.155693e+7 #s/yr
 
 pf = load('/u/10/l/lnc2115/home/WiseSimsData/DD0062/output_0062')
@@ -41,6 +39,7 @@ avgRadius = [0.]
 maxRadius = [0.]
 minRadius = [0.]
 zcutRadius = [0.]
+massRadius = [0.]
 #SFR quantities
 sfrAvg = [0.]
 sfrMax = [0.]
@@ -48,11 +47,15 @@ sfrMax = [0.]
 clump_index = [0.]
 t_start = [0.0]
 
-while (halonum < nhalos):
+count = 0
+halos_to_run = [0,1,2,3,4,5,6,7,9,15,16,17,22,25,26,33,35,36,42,48,59,188,362,900]
+
+while (count < len(halos_to_run)):
+	halonum = halos_to_run[count]
 	print 'Analyzing halo number: ',halonum
 
 	radius, mass, center = r200(pf, halos['pos'][halonum,:],halos['mass'][halonum],verbose=False)
-	filein = '../WiseSimsData/halo'+str(halonum)+'_clumps30.cpkl'
+	filein = '../WiseSimsData/pickles/halo'+str(halonum)+'_clumps.cpkl'
 	data = cPickle.load(open(filein,'rb'))
 	master_clump = data[1]
 	
@@ -106,6 +109,7 @@ while (halonum < nhalos):
 	avgRadius = append(avgRadius,average(all_clumps[index]['Radius'])/pf['cm']*pf['kpc'])	
 	maxRadius = append(maxRadius,all_clumps[index]['Radius'].max()/pf['cm']*pf['kpc'])
 	minRadius = append(minRadius,all_clumps[index]['Radius'].min()/pf['cm']*pf['kpc'])
+	massRadius = append(massRadius,all_clumps[index].quantities['WeightedAverageQuantity']('Radius','CellMassMsun')/pf['cm']*pf['kpc'])
 	#Example of old code: minRadius = append(maxRadius,master_clump.children[num_tot]['Radius'].max()/pf['cm']*pf['kpc'])
 
 	metallicities = all_clumps[index]['Metallicity']
@@ -129,9 +133,8 @@ while (halonum < nhalos):
 		zcutRadius = append(zcutRadius,all_clumps[index]['Radius'][indices].max()*pf['kpc']/pf['cm'])
 	else:
 		zcutRadius = append(zcutRadius,0.0)
-		print average(all_clumps[index]['Metallicity'][indices])
 
-	halonum = halonum + 1
+	count = count + 1
 	loopthrough = 0
 
 
@@ -145,6 +148,7 @@ offsets = delete(offsets,0)
 avgRadius = delete(avgRadius,0)
 maxRadius = delete(maxRadius,0)
 minRadius = delete(minRadius,0)
+massRadius = delete(massRadius,0)
 fillFactors = delete(fillFactors,0,0)
 sfrAvg = delete(sfrAvg,0)
 sfrMax = delete(sfrMax,0)
@@ -163,6 +167,7 @@ data['offsets'] = offsets
 data['avgRadius'] = avgRadius
 data['maxRadius'] = maxRadius
 data['minRadius'] = minRadius
+data['massRadius'] = massRadius
 data['fillFactors'] = fillFactors
 data['sfrAvg'] = sfrAvg
 data['sfrMax'] = sfrMax
@@ -170,7 +175,7 @@ data['clump_index'] = clump_index
 data['t_start'] = t_start
 data['zcutRadius'] = zcutRadius
 
-fileout = 'clump_dict30.cpkl'
+fileout = 'clump_dict.cpkl'
 cPickle.dump(data,open(fileout,'wb'),protocol=-1)
 
 

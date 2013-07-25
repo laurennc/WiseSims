@@ -1,5 +1,14 @@
+from yt.mods import *
+from yt.analysis_modules.level_sets.api import *
+from yt.analysis_modules.star_analysis.api import *
+from myanyl import *
+import cPickle
+import numpy as np
+import matplotlib.pyplot as plt
+
+
 class Clump_Contours:
-	def __init__(self,pf, center, radius, field, clump, width)
+	def __init__(self,pf, center, radius, field, clump, width):
 		self.pf = pf
 		self.center = center
 		self.radius = radius
@@ -13,10 +22,10 @@ class Clump_Contours:
 		
 	
 	def make_main_plot(self, plottype, dim):
-		if self.field='Density':
+		if self.field=='Density':
 			self.pc.set_zlim(1e-27,1e-22)
 		
-		if (plottpe = 'proj'):
+		if (plottype == 'proj'):
 			self.pc.add_projection(self.field,dim)
 		elif (plottype == 'slice'):
 			self.pc.add_projection(self.field,dim)
@@ -41,10 +50,11 @@ class Clump_Contours:
 	
 	def mark_all_halos(self,halos):
 		i = 0
-		while i lt len(halos['masses']):
+		while i < len(halos['masses']):
 			offset = (((self.center[0]-halos['centers'][i][0])**2.0+(self.center[1]-halos['centers'][i][1])**2.0+
 						(self.center[2]-halos['centers'][i][2])**2.0)**0.5)*self.pf['kpc']
 			if (offset < self.width):
+				print 'adding halonumber ',halos['halonum'][i]
 				self.pc.plots[0].modify['point'](halos['centers'][i],halos['halonum'][i])
 				self.pc.plots[0].modify['sphere'](halos['centers'][i],halos['rvirs'][i]/self.pf['cm'])
 			i = i + 1

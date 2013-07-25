@@ -19,6 +19,8 @@ function = 'self.data["Metallicity"].size > 5e+2'
 from numpy import *
 
 #Lists that I'll need
+#halonum to identify the halos!
+halonumber = [0]
 #make a list of the centers
 centers = [0.,0.,0.]
 #Virial Radii in cm
@@ -52,6 +54,7 @@ halos_to_run = [0,1,2,3,4,5,6,7,9,15,16,17,22,25,26,33,35,36,42,48,59,188,362,90
 
 while (count < len(halos_to_run)):
 	halonum = halos_to_run[count]
+	halonumber = append(halonumber,halonum)
 	print 'Analyzing halo number: ',halonum
 
 	radius, mass, center = r200(pf, halos['pos'][halonum,:],halos['mass'][halonum],verbose=False)
@@ -139,6 +142,7 @@ while (count < len(halos_to_run)):
 
 
 #Need to delete the zeroes from the beginning of the arrays!
+halonumber = delete(halonumber,0)
 centers = delete(centers,0,0)
 rvirs = delete(rvirs,0)
 star_masses = delete(star_masses, 0)
@@ -158,6 +162,7 @@ zcutRadius = delete(zcutRadius,0)
 
 #create and pickle the recarray for easy loading
 data = {}
+data['halonum'] = halonumber
 data['centers'] = centers
 data['rvirs'] = rvirs
 data['star_masses'] = star_masses

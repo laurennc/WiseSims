@@ -81,3 +81,14 @@ def metallicity_hist(metallicities,nbins,fileout):
 	plt.savefig(fileout)
 	plt.close()	
 	return n, bins, patches
+
+def dilution_model(tsn,tnow,t_dil,M_dil):
+	return M_dil*(1.0 - np.exp((tsn-tnow)/t_dil))
+
+#def where_outside_rvir(pf,center,radius,clump.metal_limit):
+#	rad = radius/pf['cm']
+#	dist = ((clump['x']-center[0])**2.0+(clump['y']-center[1])**2.0+(clump['z']-center[2])**2.0)**0.5
+#	idx = np.where(clump['Metallicity'] >= metal_limit)
+#	return np.where(dist[idx] > rad)
+
+

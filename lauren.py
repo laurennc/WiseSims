@@ -85,10 +85,15 @@ def metallicity_hist(metallicities,nbins,fileout):
 def dilution_model(tsn,tnow,t_dil,M_dil):
 	return M_dil*(1.0 - np.exp((tsn-tnow)/t_dil))
 
-#def where_outside_rvir(pf,center,radius,clump.metal_limit):
-#	rad = radius/pf['cm']
-#	dist = ((clump['x']-center[0])**2.0+(clump['y']-center[1])**2.0+(clump['z']-center[2])**2.0)**0.5
-#	idx = np.where(clump['Metallicity'] >= metal_limit)
-#	return np.where(dist[idx] > rad)
+def return_snwinds_scaled_radii(t_start,mass_in):
+	L_sun = 6.3706e-21 #solar mass kpc^2 yr^-3
+	G = 4.4986e-24 #kpc^3 yr^-2 solar mass^-1
+	H_0 = 7.48609e-11 #yr^-1
+	little_h = 0.732
+	omega_b = 0.0416
+	f_sn = 0.01
+
+	L_scale = 1.2*L_sun*mass_in
+	return (L_scale**0.2)*(G**0.2)*(t_start)
 
 

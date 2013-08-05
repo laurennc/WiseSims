@@ -48,6 +48,10 @@ sfrMax = [0.]
 #List of the index of the clump with smallest offset from halo 
 clump_index = [0.]
 t_start = [0.0]
+#Quantities needed for Dilution Mass Models
+dilmass6 = [0.]
+dilmass17 = [0.]
+
 
 count = 0
 halos_to_run = [0,1,2,3,4,5,6,7,9,15,16,17,22,25,26,33,35,36,42,48,59,188,362,900]
@@ -113,10 +117,8 @@ while (count < len(halos_to_run)):
 	maxRadius = append(maxRadius,all_clumps[index]['Radius'].max()/pf['cm']*pf['kpc'])
 	minRadius = append(minRadius,all_clumps[index]['Radius'].min()/pf['cm']*pf['kpc'])
 	massRadius = append(massRadius,all_clumps[index].quantities['WeightedAverageQuantity']('Radius','CellMassMsun')/pf['cm']*pf['kpc'])
-	#Example of old code: minRadius = append(maxRadius,master_clump.children[num_tot]['Radius'].max()/pf['cm']*pf['kpc'])
 
 	metallicities = all_clumps[index]['Metallicity']
-
 	volumes = all_clumps[index]['CellVolume']
 	total_volume = all_clumps[index].quantities['TotalQuantity']('CellVolume')
 
@@ -136,6 +138,15 @@ while (count < len(halos_to_run)):
 		zcutRadius = append(zcutRadius,all_clumps[index]['Radius'][indices].max()*pf['kpc']/pf['cm'])
 	else:
 		zcutRadius = append(zcutRadius,0.0)
+
+	dist = ((all_clumps[index]['x']-center[0])**2.0+(all_clumps[index]['y']-center[1])**2.0+(all_clumps[index]['z']-center[2])**2.0)**0.5
+	idx = where(all_clumps[index]['Metallicity'] >= 1e-6)
+	temp = where(dist[idx] > radius/pf['cm'])
+	dilmass6 = append(dilmass6, all_clumps[index]['CellMassMsun'][temp].sum())
+	
+	idx = where(all_clumps[index]['Metallicity'] >= 1e-17)
+	temp = where(dist[idx] > radius/pf['cm'])
+	dilmass17 = append(dilmass17, all_clumps[index]['CellMassMsun'][temp].sum())
 
 	count = count + 1
 	loopthrough = 0
@@ -159,6 +170,8 @@ sfrMax = delete(sfrMax,0)
 clump_index = delete(clump_index,0)
 t_start = delete(t_start,0)
 zcutRadius = delete(zcutRadius,0)
+dilmass6 = delete(dilmass6,0)
+dilmass17 = delete(dilmass17,0)
 
 #create and pickle the recarray for easy loading
 data = {}
@@ -179,6 +192,8 @@ data['sfrMax'] = sfrMax
 data['clump_index'] = clump_index
 data['t_start'] = t_start
 data['zcutRadius'] = zcutRadius
+data['dilmass6'] = dilmass6
+data['dilmass17'] = dilmass17
 
 fileout = 'clump_dict.cpkl'
 cPickle.dump(data,open(fileout,'wb'),protocol=-1)

@@ -15,6 +15,7 @@ tnow = 745464315.387
 
 #First I'll worry about the dilution model since that's so much easier
 yDilMod = dilution_model(data['t_start'],tnow,5.0e9,5.0e8)
+yDilModVir = dilution_model(data['t_start'],tnow,1.0e7,1.0e6)
 
 plt.plot(data['t_start'][good_idx],yDilMod[good_idx],'ro',label='Jasons Model')
 plt.plot(data['t_start'][good_idx],data['dilmass6'][good_idx],'bs',label='1e-6 Metal Cut')#,markersize=4)
@@ -36,6 +37,22 @@ plt.xscale('log')
 plt.yscale('log')
 plt.savefig('dilution_model_all.png')
 
+fig,axes = plt.subplots(2,1)
+axes[0].plot(data['t_start'],yDilModVir,'ro',label='Jasons Model')
+axes[0].plot(data['t_start'],data['dilmassvir'],'bs',label='Inside Rvir')
+axes[0].set_xlabel('Start Time of SF')
+axes[0].set_ylabel('Dilution Mass')
+axes[0].legend(loc='lower left')
+axes[0].set_xscale('log')
+axes[0].set_yscale('log')
+axes[1].plot(data['t_start'][good_idx],yDilModVir[good_idx],'ro',label='Jasons Model')
+axes[1].plot(data['t_start'][good_idx],data['dilmassvir'][good_idx],'bs',label='Inside Rvir')
+axes[1].set_xlabel('Start Time of SF')
+axes[1].set_ylabel('Dilution Mass')
+axes[1].legend(loc='lower left')
+axes[1].set_xscale('log')
+axes[1].set_yscale('log')
+fig.savefig('dilution_model_vir.png')
 
 
 #Remake the Tegmark Plot

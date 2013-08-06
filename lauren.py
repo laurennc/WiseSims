@@ -96,4 +96,8 @@ def return_snwinds_scaled_radii(t_start,mass_in):
 	L_scale = 1.2*L_sun*mass_in
 	return (L_scale**0.2)*(G**0.2)*(t_start)
 
+def make_solar_metallicity(metals):
+	return np.log10(metals) - np.log10(0.02)
+
+
 

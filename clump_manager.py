@@ -79,7 +79,7 @@ class ClumpManager:
 		idx = np.where(self.clump['Metallicity'] >= metal_limit)
 		return np.where(dist[idx] > rad)
 
-	def total_clump_quantity(indices,keyin)
+	def total_clump_quantity(indices,keyin):
 		quantity_wnted = self.clump[keyin]
 		return quantity_wanted[indices].sum()
 	

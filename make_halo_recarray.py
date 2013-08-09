@@ -51,7 +51,7 @@ t_start = [0.0]
 #Quantities needed for Dilution Mass Models
 dilmass6 = [0.]
 dilmass17 = [0.]
-
+dilmassvir = [0.]
 
 count = 0
 halos_to_run = [0,1,2,3,4,5,6,7,9,15,16,17,22,25,26,33,35,36,42,48,59,188,362,900]
@@ -148,6 +148,9 @@ while (count < len(halos_to_run)):
 	temp = where(dist[idx] > radius/pf['cm'])
 	dilmass17 = append(dilmass17, all_clumps[index]['CellMassMsun'][temp].sum())
 
+	temp = where(dist < radius/pf['cm'])
+	dilmassvir = append(dilmassvir,all_clumps[index]['CellMassMsun'][temp].sum())
+
 	count = count + 1
 	loopthrough = 0
 
@@ -172,6 +175,7 @@ t_start = delete(t_start,0)
 zcutRadius = delete(zcutRadius,0)
 dilmass6 = delete(dilmass6,0)
 dilmass17 = delete(dilmass17,0)
+dilmassvir = delete(dilmassvir,0)
 
 #create and pickle the recarray for easy loading
 data = {}
@@ -194,6 +198,7 @@ data['t_start'] = t_start
 data['zcutRadius'] = zcutRadius
 data['dilmass6'] = dilmass6
 data['dilmass17'] = dilmass17
+data['dilmassvir'] = dilmassvir
 
 fileout = 'clump_dict.cpkl'
 cPickle.dump(data,open(fileout,'wb'),protocol=-1)

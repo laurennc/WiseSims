@@ -31,7 +31,9 @@ class ClumpManager:
 		self.pc = PlotCollection(self.pf,center=self.center)
 		if field=='Density':
 			self.pc.set_zlim(1e-27,1e-22)
-		
+		if field=='Metallicity':
+			self.pc.set_zlim(1e-6,1)		
+
 		if (plottype == 'proj'):
 			self.pc.add_projection(field,dim)
 		elif (plottype == 'slice'):

@@ -15,18 +15,21 @@ data = cPickle.load(open('clump_dict.cpkl','rb'))
 while (count < len(halos_to_run)):
 	halonum = halos_to_run[count]
 	print 'Analyzing halo: ',str(halonum)
-	cm = ClumpManager(pf,halonum,data['centers'][count],data['rvirs'][count],25.,data)
-	fileout = '/u/10/l/lnc2115/home/WiseSims/analysis_plots/all_marked/halo'+str(halonum)+'_allmarked'
+	#This is for a region with radius of 25 kpc
+	#cm = ClumpManager(pf,halonum,data['centers'][count],data['rvirs'][count],25.,data)
+	#Now, I just want to look inside the virial radius
+	cm = ClumpManager(pf,halonum,data['centers'][count],data['rvirs'][count],data['rvirs'][count]/pf['cm']*pf['kpc'],data)
+	fileout = '/u/10/l/lnc2115/home/WiseSims/analysis_plots/virial/halo'+str(halonum)
 	num = 0
 	for dim in "xyz":
 		cm.make_main_plot('slice',dim,'Density',num)
-		cm.mark_all_halos(data,num)
+		#cm.mark_all_halos(data,num)
 		cm.save_plot(fileout)
 		#num = num + 1
 
 	for dim in "xyz":
 		cm.make_main_plot('slice',dim,'Metallicity',num)
-		cm.mark_all_halos(data,num)
+		#cm.mark_all_halos(data,num)
 		cm.save_plot(fileout)
 		#num = num + 1
 	cm.save_plot(fileout)

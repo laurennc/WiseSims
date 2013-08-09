@@ -7,6 +7,7 @@ import cPickle
 import numpy as np
 import matplotlib.pyplot as plt
 
+YEAR = 3.155693e7 #sec / yr
 
 
 def clump_contours(pf,center,radius,field,dim,clump,width,fileout,plottype):
@@ -46,6 +47,17 @@ def sfr_halo(pf,virial_sphere):
 	sfr = StarFormationRate(pf,star_mass=sm,star_creation_time=ct,volume=total_volume)
 	return sfr
 
+def sfr_quants(region):
+	sm = region['ParticleMassMsun']
+	ct = region['creation_time']
+	metals = region['metallicity_fraction']
+	metal = region['metallicity_fraction']
+	stars = (ct > 0)
+	sm = sm[stars]
+	ct = ct[stars]
+	metal = metal[stars]
+	return sm, ct, metal
+
 def sfr_clumps(pf,master_clump):
 	num_tot = len(master_clump.children) - 1
 	sm = master_clump.children[num_tot]['ParticleMassMsun']
@@ -70,6 +82,24 @@ def sfh_plot(sfr,fileout):
 	plt.close()
 	return True
 
+def plot_stellar_t_vs_Z(pf,t,metals,fileout):
+	#t and metals should be the values from the SIMULATIONS 
+	#otherwise, these corrections don't make sense
+	t = t * pf['Time'] / YEAR
+	metals = np.log10(metals)-np.log10(0.02)	
+
+	fig,axes = plt.subplots(2,1)
+	axes[0].plot(t,metals,'bo')
+	axes[0].set_xlabel('Particle Creation Time')
+	axes[0].set_ylabel('Metallicity')
+	axes[1].plot(t,metals,'bo')
+	axes[1].set_xlabel('Particle Creation Time')
+	axes[1].set_ylabel('Metallicity')
+	axes[1].set_ylim(-4,1)
+
+	fig.savefig(fileout)
+	plt.close()
+	return True
 
 def metallicity_hist(metallicities,nbins,fileout):
 	#plt.figure(fig_unit)
@@ -81,6 +111,7 @@ def metallicity_hist(metallicities,nbins,fileout):
 	plt.savefig(fileout)
 	plt.close()	
 	return n, bins, patches
+
 
 def dilution_model(tsn,tnow,t_dil,M_dil):
 	return M_dil*(1.0 - np.exp((tsn-tnow)/t_dil))

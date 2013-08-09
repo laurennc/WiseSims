@@ -118,9 +118,9 @@ while (count < len(halos_to_run)):
 	minRadius = append(minRadius,all_clumps[index]['Radius'].min()/pf['cm']*pf['kpc'])
 	massRadius = append(massRadius,all_clumps[index].quantities['WeightedAverageQuantity']('Radius','CellMassMsun')/pf['cm']*pf['kpc'])
 
-	metallicities = all_clumps[index]['Metallicity']
-	volumes = all_clumps[index]['CellVolume']
-	total_volume = all_clumps[index].quantities['TotalQuantity']('CellVolume')
+	metallicities = data_source['Metallicity']
+	volumes = data_source['CellVolume']
+	total_volume = volumes.sum()
 
 	loopthrough = 0
 	fillFactorsTemp = array([0.,0.,0.,0.,0.,0.,0.])

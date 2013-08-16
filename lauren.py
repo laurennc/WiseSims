@@ -130,5 +130,13 @@ def return_snwinds_scaled_radii(t_start,mass_in):
 def make_solar_metallicity(metals):
 	return np.log10(metals) - np.log10(0.02)
 
+def distance_from_center(x,y,z,center):
+	return ((x-center[0])**2.0+(y-center[1])**2.0+(z-center[2])**2.0)**0.5
 
+def readin_mainclump(pf,halos,halonum):
+	radius,mass,center = r200(pf, halos['pos'][halonum,:],halos['mass'][halonum],verbose=False)
+	filein = '/hmt/hpcstorage1/hpc/astro/users/lnc2115/WiseSimsData/pickles/halo'+str(halonum)+'_clumps.cpkl'
+	data = cPickle.load(open(filein,'rb'))
+	master_clump = data[1]
+	return master_clump,radius,mass,center
 

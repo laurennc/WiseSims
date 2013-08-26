@@ -85,7 +85,7 @@ def sfh_plot(sfr,fileout):
 def plot_stellar_t_vs_Z(pf,t,metals,fileout):
 	#t and metals should be the values from the SIMULATIONS 
 	#otherwise, these corrections don't make sense
-	t = t * pf['Time'] / YEAR
+	#t = t * pf['Time'] / YEAR
 	metals = np.log10(metals)-np.log10(0.02)	
 
 	fig,axes = plt.subplots(2,1)
@@ -133,7 +133,7 @@ def make_solar_metallicity(metals):
 def distance_from_center(x,y,z,center):
 	return ((x-center[0])**2.0+(y-center[1])**2.0+(z-center[2])**2.0)**0.5
 
-def readin_mainclump(pf,halos,halonum):
+def readin_masterclump(pf,halos,halonum):
 	radius,mass,center = r200(pf, halos['pos'][halonum,:],halos['mass'][halonum],verbose=False)
 	filein = '/hmt/hpcstorage1/hpc/astro/users/lnc2115/WiseSimsData/pickles/halo'+str(halonum)+'_clumps.cpkl'
 	data = cPickle.load(open(filein,'rb'))

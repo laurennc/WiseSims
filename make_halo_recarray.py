@@ -106,6 +106,9 @@ while (count < len(halos_to_run)):
 			index = copy(num)
 		num = num + 1
 
+	if (halonum == 15):
+		print 'changing for halo 15'
+		index = 2
 	clump_index = append(clump_index,index)
 	masses = append(masses,all_clumps[index].quantities['TotalQuantity']('CellMassMsun'))
 	holder = all_clumps[index].quantities['CenterOfMass']()

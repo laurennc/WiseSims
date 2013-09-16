@@ -140,3 +140,18 @@ def readin_masterclump(pf,halos,halonum):
 	master_clump = data[1]
 	return master_clump,radius,mass,center
 
+def output_file_readin(fileinput):
+	return np.genfromtxt(fileinput,dtype=[("x",float),("y",float),("z",float),("N_part",float),("m_halo",float),("m_FOF",float),("m_star",float),("m_gas",float),("rvir",float),("v_bulk",float),("v_rms",float),("lambda_DM",float),("lambda_gas",float)])
+
+def write_virial_values(pf,halos,fileout):
+	f = open(fileout,'wb')
+	for i in range(len(halos['mass'])):
+		radius, mass, center = r200(pf, halos['pos'][i,:],halos['mass'][i],verbose=False)
+		s = str(i)+'\t'+str(center)+'\t'+str(radius)+'\t'+str(mass)+'\n'
+		f.write(s)
+	f.close()
+
+#def find_halos_to_search(pf,A,v_bulk,tnow,tthen,grp_data,center):
+#	r = search_radius(pf,A,v_bulk,tnow,tthen)
+#	dists = distance_from_center(
+

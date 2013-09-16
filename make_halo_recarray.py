@@ -4,6 +4,7 @@ from yt.analysis_modules.star_analysis.api import *
 from myanyl import *
 import cPickle
 import matplotlib.pyplot as plt
+from lauren import *
 
 YEAR = 3.155693e+7 #s/yr
 
@@ -33,8 +34,10 @@ CofMs = [0.,0.,0.]
 offsets = [0.]
 #list of the masses
 masses = [0.]
+mvirs = [0.]
 #list of the filling factors
-metallicityList = [1e-6,1e-5,1e-4,1e-3,1e-2,1e-1,1.0]
+#metallicityList = [1e-6,1e-5,1e-4,1e-3,1e-2,1e-1,1.0]
+metallicityList = [-6,-5,-4,-3,-2,-1,0]
 fillFactors = array([0.,0.,0.,0.,0.,0.,0.])
 #list of the radii
 avgRadius = [0.]
@@ -65,7 +68,8 @@ while (count < len(halos_to_run)):
 	filein = '../WiseSimsData/pickles/halo'+str(halonum)+'_clumps.cpkl'
 	data = cPickle.load(open(filein,'rb'))
 	master_clump = data[1]
-	
+	mvirs = append(mvirs,mass)	
+
 	#stellar mass of the halo within the virial radius
 	data_source = pf.h.sphere(center,radius/pf['cm'])
 	star_masses = append(star_masses,data_source.quantities['TotalQuantity']('StarMassMsun'))
@@ -121,7 +125,7 @@ while (count < len(halos_to_run)):
 	minRadius = append(minRadius,all_clumps[index]['Radius'].min()/pf['cm']*pf['kpc'])
 	massRadius = append(massRadius,all_clumps[index].quantities['WeightedAverageQuantity']('Radius','CellMassMsun')/pf['cm']*pf['kpc'])
 
-	metallicities = data_source['Metallicity']
+	metallicities = make_solar_metallicity(data_source['Metallicity'])
 	volumes = data_source['CellVolume']
 	total_volume = volumes.sum()
 
@@ -179,12 +183,14 @@ zcutRadius = delete(zcutRadius,0)
 dilmass6 = delete(dilmass6,0)
 dilmass17 = delete(dilmass17,0)
 dilmassvir = delete(dilmassvir,0)
+mvirs = delete(mvirs,0)
 
 #create and pickle the recarray for easy loading
 data = {}
 data['halonum'] = halonumber
 data['centers'] = centers
 data['rvirs'] = rvirs
+data['mvirs'] = mvirs
 data['star_masses'] = star_masses
 data['CofMs'] = CofMs
 data['masses'] = masses

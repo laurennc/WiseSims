@@ -151,7 +151,16 @@ def write_virial_values(pf,halos,fileout):
 		f.write(s)
 	f.close()
 
-#def find_halos_to_search(pf,A,v_bulk,tnow,tthen,grp_data,center):
-#	r = search_radius(pf,A,v_bulk,tnow,tthen)
-#	dists = distance_from_center(
+def make_radial_profile(pf,data_source,center,rvirKPC,bins):
+	radii = distance_from_center(data_source['x'],data_source['y'],data_source['z'],center)*pf['kpc']
+	dr = rvirKPC/bins
+	rp_r = np.arange(bins)*dr + dr/2.0
+	rp_vals = []
+	for irad in range(int(bins)):
+		minrad = irad*dr
+		maxrad = minrad + dr
+		thisindex = (radii>=minrad) * (radii<maxrad)
+		rp_vals = np.append(rp_vals,np.average(make_solar_metallicity(data_source['Metallicity'][thisindex])))
+	return rp_r,rp_vals
+
 

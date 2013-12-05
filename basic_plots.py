@@ -14,8 +14,8 @@ halos_to_run = [0,1,2,3,4,5,6,7,9,15,16,17,22,25,26,33,35,36,42,48,59,188,362,90
 #counter = 13
 counter = 0
 
-pf = load('/u/10/l/lnc2115/home/WiseSimsData/DD0062/output_0062')
-halos = readhalos(foffile='/u/10/l/lnc2115/home/WiseSimsData/groups_02797.dat')
+pf = load('/u/10/l/lnc2115/vega/data/Wise/DD0062/output_0062')
+halos = readhalos(foffile='/u/10/l/lnc2115/vega/data/Wise/groups_02797.dat')
 field = 'Metallicity'
 
 from numpy import *

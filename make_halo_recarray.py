@@ -8,8 +8,8 @@ from lauren import *
 
 YEAR = 3.155693e+7 #s/yr
 
-pf = load('/u/10/l/lnc2115/home/WiseSimsData/DD0062/output_0062')
-halos = readhalos(foffile='/u/10/l/lnc2115/home/WiseSimsData/groups_02797.dat')
+pf = load('/u/10/l/lnc2115/vega/data/Wise/DD0062/output_0062')
+halos = readhalos(foffile='/u/10/l/lnc2115/vega/data/Wise/groups_02797.dat')
 field = 'Metallicity'
 step = 2.0
 c_min = 1.0e-17

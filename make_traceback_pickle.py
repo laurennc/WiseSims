@@ -18,13 +18,13 @@ list31 = []
 
 master_index_list = [list62,list135,list134,list133,list59,list37,list36,list31]
 
-datasets = ['/u/10/l/lnc2115/home/WiseSimsData/DD0062/output_0062','/hpc/astrostats/astro/users/lnc2115/DD0135/output_0135','/hpc/astrostats/astro/users/lnc2115/DD0134/output_0134','/hpc/astrostats/astro/users/lnc2115/DD0133/output_0133','/hpc/astrostats/astro/users/lnc2115/DD0059/output_0059','/hpc/astrostats/astro/users/lnc2115/DD0037/output_0037','/hpc/astrostats/astro/users/lnc2115/DD0036/output_0036','/hpc/astrostats/astro/users/lnc2115/DD0031/output_0031']
+datasets = ['/u/10/l/lnc2115/vega/data/Wise/DD0062/output_0062','/u/10/l/lnc2115/vega/data/Wise/DD0135/output_0135','/u/10/l/lnc2115/vega/data/Wise/DD0134/output_0134','/u/10/l/lnc2115/vega/data/Wise/DD0133/output_0133','/u/10/l/lnc2115/vega/data/Wise/DD0059/output_0059','/u/10/l/lnc2115/vega/data/Wise/DD0037/output_0037','/u/10/l/lnc2115/vega/data/Wise/DD0036/output_0036','/u/10/l/lnc2115/vega/data/Wise/DD0031/output_0031']
 
-halosets = ['/u/10/l/lnc2115/home/WiseSimsData/groups_02797.dat','/hpc/astrostats/astro/users/lnc2115/groups_02789.dat','/hpc/astrostats/astro/users/lnc2115/groups_02784.dat','/hpc/astrostats/astro/users/lnc2115/groups_02779.dat','/hpc/astrostats/astro/users/lnc2115/groups_02685.dat','/hpc/astrostats/astro/users/lnc2115/groups_01260.dat','/hpc/astrostats/astro/users/lnc2115/groups_01172.dat','/hpc/astrostats/astro/users/lnc2115/groups_00751.dat','/hpc/astrostats/astro/users/lnc2115/groups_00399.dat']
+halosets = ['/u/10/l/lnc2115/vega/data/Wise/groups_02797.dat','/u/10/l/lnc2115/vega/data/Wise/groups_02789.dat','/u/10/l/lnc2115/vega/data/Wise/groups_02784.dat','/u/10/l/lnc2115/vega/data/Wise/groups_02779.dat','/u/10/l/lnc2115/vega/data/Wise/groups_02685.dat','/u/10/l/lnc2115/vega/data/Wise/groups_01260.dat','/u/10/l/lnc2115/vega/data/Wise/groups_01172.dat','/u/10/l/lnc2115/vega/data/Wise/groups_00751.dat','/u/10/l/lnc2115/vega/data/Wise/groups_00399.dat']
 
 timesteps=['0062','0135','0134','0133','0059','0037','0036','0031']
 
-count = 4
+count = 1
 
 metallicityList=[-6,-5,-4,-3,-2,-1]
 
@@ -38,8 +38,8 @@ while count < 5:
 	halos = readhalos(foffile=halosets[count])
 
 
-	centers=[]
 	mvirs=[]
+	centers = np.array([0.,0.,0.])
 	fillFactors=np.array([0.,0.,0.,0.,0.,0.,0.])	
 	rmax = np.array([0.,0.,0.,0.,0.,0.,0.])
 	ravg = np.array([0.,0.,0.,0.,0.,0.,0.])
@@ -50,17 +50,17 @@ while count < 5:
 		rvir,mvir,center = r200(pf,halos['pos'][i,:],halos['mass'][i],verbose=False)
 		mvirs = np.append(mvirs,mvir)
 		rvirs = np.append(rvirs,rvir)
-		centers = np.append(centers,center)
-		
+		centers = np.vstack((centers,center))		
+
 		fields = ["Density","SolarMetals"]
 		zlim = {"Density":(), "SolarMetals":(-6,1)}
 
-		for dim in "xyz":
+		#for dim in "xyz":
 	                #pc = make_halo_plot(pf,center,rvir,15.,'slice',dim,'SolarMetals')
-			sp = SlicePlot(pf,dim,fields,center,width=(10.,'kpc'),axes_unit=["kpc","kpc"])
-			sp.annotate_particles(0.05,p_size=2.5,stars_only=True)
-			fileout='starparticles/'+str(timehere)+'_halo'+str(i)
-			sp.save(fileout)
+		#	sp = SlicePlot(pf,dim,fields,center,width=(10.,'kpc'),axes_unit=["kpc","kpc"])
+		#	sp.annotate_particles(0.05,p_size=2.5,stars_only=True)
+		#	fileout='starparticles/'+str(timehere)+'_halo'+str(i)
+		#	sp.save(fileout)
 
 		#for dim in "xyz":
 			#pc = make_halo_plot(pf,center,rvir,15.,'slice',dim,'Density')
@@ -69,7 +69,6 @@ while count < 5:
 
 	
 		data_source = pf.h.sphere(center,rvir/pf['cm'])
-
 		fillFactorsTemp = np.array([0.,0.,0.,0.,0.,0.,0.])
 		rmaxTemp = np.array([0.,0.,0.,0.,0.,0.,0.])
 		ravgTemp = np.array([0.,0.,0.,0.,0.,0.,0.])
@@ -83,7 +82,11 @@ while count < 5:
 			goodval = metallicityList[loopthrough]
 			indices = np.where(metallicities >= goodval)
 			fillFactorsTemp[loopthrough] = volumes[indices].sum()/total_volume
-			if len(indices[0]) == 1:
+			if len(indices[0]) == 0:
+				print 'ERROR: INDICES IN FILL FACTORS LOOP ARE ZERO'
+			elif i== 22:
+				print '22 is a pain' 
+			else:	
 				rmaxTemp[loopthrough] = np.max(radii[indices])
 				ravgTemp[loopthrough] = np.average(radii[indices])
 
@@ -95,7 +98,8 @@ while count < 5:
 	#here make a pickle for each timestep for now
 	fillFactors = np.delete(fillFactors,0,0)
 	ravg = np.delete(ravg,0,0)
-	rmax = np.delete(max,0,0)
+	rmax = np.delete(rmax,0,0)
+	centers = np.delete(centers,0,0)
 
 	data = {}
 	data['halonum'] = master_index_list[count]

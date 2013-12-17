@@ -12,6 +12,7 @@ YEAR = 3.155693e7 #sec / yr
 
 def clump_contours(pf,center,radius,field,dim,clump,width,fileout,plottype):
 	#all_clumps = get_lowest_clumps(master_clump)
+
 	#num_tot = len(master_clump.children)-1
 	radius = radius/pf['cm']	
 
@@ -27,12 +28,14 @@ def clump_contours(pf,center,radius,field,dim,clump,width,fileout,plottype):
 		pc.add_slice(field,dim)
 	else:
 		return false
+
 	pc.set_width(width,'kpc')
 	clump_plot = [clump]
 	pc.plots[0].modify['clumps'](clump_plot)
 	pc.plots[0].modify['point'](center,'o')
 	pc.plots[0].modify['point'](clump.quantities['CenterOfMass'](),'x')
 	pc.plots[0].modify['sphere'](center,radius)
+	pc.set_zlim(-18,0)
 	pc.set_cmap('spectral')
 	pc.save(fileout)
 	return True

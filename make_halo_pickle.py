@@ -17,24 +17,23 @@ rmax = np.array([0.,0.,0.,0.,0.,0.,0.])
 redshift = [] 
 time = []
 
-listappends  = [rvirs,mvirs,redshift,time]
 appendstrings = ['rvirs','mvirs','redshift','time']
-listvstacks = [centers,fillFactors,ravg,rmax]
 vstackstrings = ['centers','fillFactors','ravg','rmax']
 
 while count < 5:
 	data = cPickle.load(open(timepickles[count],'rb'))
 	halonum = halo0[count]
-	idx = np.where(data['halonum'] == halonum)[0]
+	idx = np.where(np.array(data['halonum']) == halonum)[0]
+
+	rvirs = np.append(rvirs,data['rvirs'][idx])
+	mvirs = np.append(mvirs,data['mvirs'][idx])
+	redshift = np.append(redshift,data['redshift'])
+	time = np.append(time,data['time'])
 	
-	i = 0
-	while i < len(listvstacks):
-		listvstacks[i] = np.append(listvstacks[i],data[vstackstrings[i]][idx])
-		i = i + 1
-	i = 0
-	while i < len(listappends):
-		listappends[i] = np.append(listappends[i],data[appendstrings[i]][idx])
-		i = i + 1
+	centers = np.vstack((centers,data['centers'][idx]))
+	fillFactors = np.vstack((fillFactors,data['fillFactors'][idx]))
+	ravg = np.vstack((ravg,data['ravg'][idx]))
+	rmax = np.vstack((rmax,data['rmax'][idx]))
 
 	count = count + 1
 

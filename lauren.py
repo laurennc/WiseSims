@@ -75,12 +75,15 @@ def sfr_clumps(pf,master_clump):
 
 def sfh_plot(sfr,fileout):
 	#plt.figure(fig_unit)
-	plt.plot(sfr.lookback_time,sfr.Msol_yr)
-	plt.xscale('log')
-	plt.yscale('log')
-	plt.xlabel('Lookback Time (yrs)')
-	plt.ylabel('SFR (Msol/yr)')
-	plt.ylim(1.0e-5,1.0)
+	#plt.plot(sfr.lookback_time,sfr.Msol_yr,'g*')
+	plt.plot(np.log10(sfr.time),np.log10(sfr.Msol_yr),'g-',linewidth=1.3)
+	#plt.xscale('log')
+	#plt.yscale('log')
+	#plt.xlabel('Lookback Time (yrs)')
+	plt.xlabel('log(Time) (yrs)')
+	plt.ylabel('log(SFR) (Msol/yr)')
+	#plt.ylim(1.0e-5,1.0)
+	plt.ylim(-5,0)
 	plt.savefig(fileout)
 	plt.close()
 	return True
@@ -90,13 +93,15 @@ def plot_stellar_t_vs_Z(pf,t,metals,fileout):
 	#otherwise, these corrections don't make sense
 	#t = t * pf['Time'] / YEAR
 	metals = np.log10(metals)-np.log10(0.02)	
+	t = np.log10(pf['Time']*t/YEAR)
 
-	fig,axes = plt.subplots(2,1)
+	fig,axes = plt.subplots(2,1,sharex=True)
+	fig.subplots_adjust(hspace=0.1,wspace=0.1)
 	axes[0].plot(t,metals,'bo')
-	axes[0].set_xlabel('Particle Creation Time')
+	#axes[0].set_xlabel('Particle Creation Time (yrs)')
 	axes[0].set_ylabel('Metallicity')
 	axes[1].plot(t,metals,'bo')
-	axes[1].set_xlabel('Particle Creation Time')
+	axes[1].set_xlabel('Particle Creation Time (yrs)')
 	axes[1].set_ylabel('Metallicity')
 	axes[1].set_ylim(-4,1)
 

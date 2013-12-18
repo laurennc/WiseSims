@@ -65,7 +65,7 @@ while (count < len(halos_to_run)):
 	print 'Analyzing halo number: ',halonum
 
 	radius, mass, center = r200(pf, halos['pos'][halonum,:],halos['mass'][halonum],verbose=False)
-	filein = '../WiseSimsData/pickles/halo'+str(halonum)+'_clumps.cpkl'
+	filein = '/u/10/l/lnc2115/vega/data/Wise/pickles/halo'+str(halonum)+'_clumps.cpkl'
 	data = cPickle.load(open(filein,'rb'))
 	master_clump = data[1]
 	mvirs = append(mvirs,mass)	

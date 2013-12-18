@@ -1,6 +1,6 @@
 from lauren import *
 
-data = cPickle.load(open('clump_dict.cpkl','rb'))
+data = cPickle.load(open('/u/10/l/lnc2115/vega/data/Wise/pickles/clump_dict.cpkl','rb'))
 
 grp1 = [0,1,14,15,19,20,23]
 grp2 = [4,6,7,11,21]
@@ -30,13 +30,14 @@ plt.plot(np.log10(data['star_masses'])[indp],ravgcomp[indp],'rs',label='Indp')
 plt.plot(np.log10(data['star_masses'])[grp1],ravgcomp[grp1],'bo',label='Groups')
 plt.plot(np.log10(data['star_masses'])[grp2],ravgcomp[grp2],'bo')
 plt.plot(np.log10(data['star_masses'])[grp3],ravgcomp[grp3],'bo')
-plt.plot(np.log10(data['star_masses'])[maxs],ravgcomp[maxs],'g*',markersize=13.5,'Max Grp Mem')
+plt.plot(np.log10(data['star_masses'])[maxs],ravgcomp[maxs],'g*',markersize=13.5,label='Max Grp Mem')
 #plt.plot(np.arange(6)+2.5,np.zeros(6)+1,'k--',linewidth=1.5)
 plt.axhline(y=1,linewidth=1.5,linestyle='--',color='k')
 plt.xlabel('log(Stellar Mass)')
 plt.ylabel('R Avg / Tegmark')
 plt.legend()
 plt.savefig('best_tegmark_compare_avg.eps')
+plt.close()
 
 plt.plot(np.log10(data['star_masses'])[indp],rmaxcomp[indp],'rs',label='Indp')
 plt.plot(np.log10(data['star_masses'])[grp1],rmaxcomp[grp1],'bo',label='Groups')
@@ -48,4 +49,5 @@ plt.axhline(y=1,linewidth=1.5,linestyle='--',color='k')
 plt.xlabel('log(Stellar Mass)')
 plt.ylabel('R Max / Tegmark')
 plt.savefig('best_tegmark_compare_max.eps')
+plt.close()
 

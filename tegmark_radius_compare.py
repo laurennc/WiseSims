@@ -1,6 +1,6 @@
 from lauren import *
 
-data = cPickle.load(open('/u/10/l/lnc2115/vega/data/Wise/pickles/clump_dict.cpkl','rb'))
+data = cPickle.load(open('/u/10/l/lnc2115/vega/repos/WiseSims/clump_dict.cpkl','rb'))
 
 grp1 = [0,1,14,15,19,20,23]
 grp2 = [4,6,7,11,21]

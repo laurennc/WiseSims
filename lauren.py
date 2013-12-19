@@ -36,7 +36,8 @@ def clump_contours(pf,center,radius,field,dim,clump,width,fileout,plottype):
 	pc.plots[0].modify['point'](clump.quantities['CenterOfMass'](),'x')
 	pc.plots[0].modify['sphere'](center,radius)
 	pc.set_zlim(-18,0)
-	pc.set_cmap('spectral')
+#	pc.set_cmap('spectral')
+	pc.set_cmap('cool')
 	pc.save(fileout)
 	return True
 

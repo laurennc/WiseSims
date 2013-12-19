@@ -18,15 +18,16 @@ def slices_with_clumps_and_stars(halonum,clump_index,pf,center,radius):
         all_clumps = get_lowest_clumps(master_clump)
 
 
-	clump_contours(pf,center,radius,'SolarMetals','z',all_clumps['clump_index'],30.,'halo'+str(halonum),'slice')
+	clump_contours(pf,center,radius,'SolarMetals','x',all_clumps[clump_index],30.,'halo'+str(halonum),'slice')
 	#clump index for halo 0 is 3!
 	#clump index for halo 3 is 5!
 	#they're both the last clump in the list all_clumps so len-1
 
-	sp = SlicePlot(pf,'z','SolarMetals',center,width=(30.,'kpc'),axes_unit=["kpc","kpc"])
+	sp = SlicePlot(pf,'x','SolarMetals',center,width=(30.,'kpc'),axes_unit=["kpc","kpc"])
 	sp.annotate_particles(0.05,p_size=2.5,stars_only=True)
 	sp.set_zlim('all',-18,0)
-	sp.set_cmap('all','spectral')
+	#sp.set_cmap('all','spectral')
+	sp.set_cmap('all','cool')
 	sp.save('halo'+str(halonum)+'_stars')
 	return
 
@@ -63,11 +64,14 @@ def sf_time_properties(pf,data_sphere,halonum,fileout):
 	return 'plotted'
 
 def plot_filling_factors(halonum,fileout):
-	data = cPickle.load(open('halo'+str(halonum)+'.cpkl','rb'))
+	#data = cPickle.load(open('halo'+str(halonum)+'.cpkl','rb'))
+	data0 = cPickle.load(open('halo0.cpkl','rb'))
+	data3 = cPickle.load(open('halo3.cpkl','rb'))
 	want = 6
 	count = 0
 	while count < len(data['redshift']):
-		plt.plot(np.log10(np.zeros(want)+data['time'][count]),data['fillFactors'][count][:6],'s')
+		plt.plot(np.log10(np.zeros(want)+data0['time'][count]),data0['fillFactors'][count][:6],'s')
+		plt.plot(np.log10(np.zeros(want)+data3['time'][count]),data3['fillFactors'][count][:6],'^')
 		count = count + 1
 	plt.ylabel('Filling Factors')
 	plt.xlabel('log(time) (yrs)')
@@ -81,9 +85,10 @@ def plot_filling_factors(halonum,fileout):
 def basic_slice_plot(pf,center,radius,dim,fileout):
 	sp = SlicePlot(pf,dim,'SolarMetals',center,width=(radius,'cm'),axes_unit=["kpc","kpc"])
         sp.annotate_particles(0.05,p_size=3.0,stars_only=True)
-        sp.set_zlim('all',-18,0)
-        sp.set_cmap('all','spectral')
-        sp.save(fileout)
+        #sp.set_zlim('all',-18,0)
+        #sp.set_cmap('all','spectral')
+        sp.set_cmap('all','cool')
+	sp.save(fileout)
 	return
 
 

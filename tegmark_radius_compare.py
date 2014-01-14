@@ -18,7 +18,11 @@ tnow = 745464315.387
 
 r_scale = return_snwinds_scaled_radii(data['t_start'],data['star_masses'])
 
-lauren_r = [1.47619,1.49896,1.43802,0.840769,1.17984,1.10524,0.788054,0.788054,0.155246,0.150740,0.675077,1.32790,0.0565202,0.899243,1.40328,0.710530,0.443687,0.386675,0.163982,0.483630,0.308490,0.788054,0.488499,0.292885]
+#THESE OLD VALUES CAME FROM USING THE WRONG MASS IN THE SNRATES FILE
+#lauren_r = [1.47619,1.49896,1.43802,0.840769,1.17984,1.10524,0.788054,0.788054,0.155246,0.150740,0.675077,1.32790,0.0565202,0.899243,1.40328,0.710530,0.443687,0.386675,0.163982,0.483630,0.308490,0.788054,0.488499,0.292885]
+
+#THESE ARE THE VALUES I GET WHEN I BELIEVE I'VE CORRECTED IT
+lauren_r = [2.78808,2.83108,2.71597,1.58790,2.22833,2.08742,1.48833,1.48833,0.292994,0.284480,1.27494,2.50799,0.106331,1.69834,2.65037,1.34190,0.837878,0.730189,0.309501,0.913325,0.582502,1.48833,0.922523,0.553023]
 
 ravg = data['avgRadius']/r_scale
 rmax = data['maxRadius']/r_scale
@@ -36,7 +40,7 @@ plt.axhline(y=1,linewidth=1.5,linestyle='--',color='k')
 plt.xlabel('log(Stellar Mass)')
 plt.ylabel('R Avg / Tegmark')
 plt.legend()
-plt.savefig('best_tegmark_compare_avg.eps')
+plt.savefig('best_tegmark_compare_avg_fixed.eps')
 plt.close()
 
 plt.plot(np.log10(data['star_masses'])[indp],rmaxcomp[indp],'rs',label='Indp')
@@ -48,6 +52,6 @@ plt.plot(np.log10(data['star_masses'])[maxs],rmaxcomp[maxs],'g*',markersize=13.5
 plt.axhline(y=1,linewidth=1.5,linestyle='--',color='k')
 plt.xlabel('log(Stellar Mass)')
 plt.ylabel('R Max / Tegmark')
-plt.savefig('best_tegmark_compare_max.eps')
+plt.savefig('best_tegmark_compare_max_fixed.eps')
 plt.close()
 

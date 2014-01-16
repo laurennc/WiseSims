@@ -24,7 +24,7 @@ halosets = ['/u/10/l/lnc2115/vega/data/Wise/groups_02797.dat','/u/10/l/lnc2115/v
 
 timesteps=['0062','0135','0134','0133','0059','0037','0036','0031']
 
-count = 1
+count = 0
 
 metallicityList=[-6,-5,-4,-3,-2,-1]
 
@@ -41,6 +41,7 @@ while count < 5:
 	mvirs=[]
 	centers = np.array([0.,0.,0.])
 	fillFactors=np.array([0.,0.,0.,0.,0.,0.,0.])	
+	massFactors=np.array([0.,0.,0.,0.,0.,0.,0.])
 	rmax = np.array([0.,0.,0.,0.,0.,0.,0.])
 	ravg = np.array([0.,0.,0.,0.,0.,0.,0.])
 	rvirs = []
@@ -70,18 +71,23 @@ while count < 5:
 	
 		data_source = pf.h.sphere(center,rvir/pf['cm'])
 		fillFactorsTemp = np.array([0.,0.,0.,0.,0.,0.,0.])
+		massFactorsTemp = np.array([0.,0.,0.,0.,0.,0.,0.])
 		rmaxTemp = np.array([0.,0.,0.,0.,0.,0.,0.])
 		ravgTemp = np.array([0.,0.,0.,0.,0.,0.,0.])
 		
 		metallicities = data_source['SolarMetals']
 		volumes = data_source['CellVolume']
+		cellmasses = data_source['CellMassMsun']
+		total_mass = cellmasses.sum()
 		total_volume = volumes.sum()
 		radii = distance_from_center(data_source['x'],data_source['y'],data_source['z'],center)*pf['kpc']
 
 		for loopthrough in range(6):
+			#print loopthrough
 			goodval = metallicityList[loopthrough]
 			indices = np.where(metallicities >= goodval)
 			fillFactorsTemp[loopthrough] = volumes[indices].sum()/total_volume
+			massFactorsTemp[loopthrough] = cellmasses[indices].sum()/total_mass
 			if len(indices[0]) == 0:
 				print 'ERROR: INDICES IN FILL FACTORS LOOP ARE ZERO'
 			elif i== 22:
@@ -91,12 +97,14 @@ while count < 5:
 				ravgTemp[loopthrough] = np.average(radii[indices])
 
 		fillFactors = np.vstack((fillFactors,fillFactorsTemp))
+		massFactors = np.vstack((massFactors,massFactorsTemp))
 		rmax = np.vstack((rmax,rmaxTemp))
 		ravg = np.vstack((ravg,ravgTemp))
 
 		
 	#here make a pickle for each timestep for now
 	fillFactors = np.delete(fillFactors,0,0)
+	massFactors = np.delete(massFactors,0,0)
 	ravg = np.delete(ravg,0,0)
 	rmax = np.delete(rmax,0,0)
 	centers = np.delete(centers,0,0)
@@ -107,6 +115,7 @@ while count < 5:
 	data['rvirs'] = rvirs
 	data['mvirs'] = mvirs
 	data['fillFactors'] = fillFactors
+	data['massFactors'] = massFactors
 	data['ravg'] = ravg
 	data['rmax'] = rmax
 	data['redshift'] = pf.current_redshift

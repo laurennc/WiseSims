@@ -63,23 +63,37 @@ def sf_time_properties(pf,data_sphere,halonum,fileout):
 	plt.close()
 	return 'plotted'
 
-def plot_filling_factors(halonum,fileout):
+def plot_factors(halonum,factorname,fileout,fileout2):
 	#data = cPickle.load(open('halo'+str(halonum)+'.cpkl','rb'))
 	data0 = cPickle.load(open('halo0.cpkl','rb'))
 	data3 = cPickle.load(open('halo3.cpkl','rb'))
 	want = 6
 	count = 0
-	while count < len(data['redshift']):
-		plt.plot(np.log10(np.zeros(want)+data0['time'][count]),data0['fillFactors'][count][:6],'s')
-		plt.plot(np.log10(np.zeros(want)+data3['time'][count]),data3['fillFactors'][count][:6],'^')
+	while count < len(data0['redshift']):
+		plt.plot(np.log10(np.zeros(want)+data0['time'][count]),data0[factorname][count][:6],'s')
+		plt.plot(np.log10(np.zeros(want)+data3['time'][count]),data3[factorname][count][:6],'^')
 		count = count + 1
-	plt.ylabel('Filling Factors')
+	plt.ylabel(factorname)
 	plt.xlabel('log(time) (yrs)')
 	#plt.xscale('log')
 	#plt.xlim(7e8,8e8)
 	plt.xlim(8.85,8.875)
 	plt.savefig(fileout)
 	plt.close()
+
+	count = 0
+	while count < len(data0['redshift']):
+                plt.plot(np.log10(np.zeros(want)+data0['time'][count]),100.*(data0[factorname][count][:6]-data3[factorname][count][:6]),'o')
+                count = count + 1
+        plt.ylabel(factorname+' Difference')
+        plt.xlabel('log(time) (yrs)')
+        #plt.xscale('log')
+        #plt.xlim(7e8,8e8)
+        plt.xlim(8.85,8.875)
+        plt.savefig(fileout2)
+        plt.close()
+        
+
 	return 'plotted'
 
 def basic_slice_plot(pf,center,radius,dim,fileout):

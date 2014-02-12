@@ -11,7 +11,9 @@ def build_radial_profile_matrix(pf,data_source,center,rvirKPC,bins):
 	metals = np.arange(101)*-6./100.
 	radii = distance_from_center(data_source['x'],data_source['y'],data_source['z'],center)*pf['kpc']
 	metallicities = make_solar_metallicity(data_source['Metallicity'])
-	metal_masses = data_source['Metal_MassMsun']
+	#metal_masses = data_source['Metal_MassMsun']
+	#DOING VOLUMES BUT CALLED METAL_MASSES FOR EASE!
+	metal_masses = data_source['CellVolume']/(pf['cm']**3.0)*(pf['pc']**3.0)
 	dr = rvirKPC/bins
 	rp_r = np.arange(bins)*dr + dr/2.0
 	rp_vals = np.zeros((len(metals),bins))
@@ -51,8 +53,9 @@ def run_many_halos(len):
 
 		rpvals = build_radial_profile_matrix(pf,data_source,data['centers'][i],rvirKPC,100.)
 		
-		fileout = 'MassMetalProfiles/halo'+str(data['halonum'][i])+'_massmetalprofile.png'
-		
+		#fileout = 'MassMetalProfiles/halo'+str(data['halonum'][i])+'_massmetalprofile.png'
+		fileout = 'VolMetalProfiles/halo'+str(data['halonum'][i])+'_volmetalprofile.png'		
+
 		plot_rp_matrix(rpvals,rvirKPC,fileout)
 		i = i + 1
 

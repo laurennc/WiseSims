@@ -11,9 +11,13 @@ def build_radial_profile_matrix(pf,data_source,center,rvirKPC,bins):
 	metals = np.arange(101)*-6./100.
 	radii = distance_from_center(data_source['x'],data_source['y'],data_source['z'],center)*pf['kpc']
 	metallicities = make_solar_metallicity(data_source['Metallicity'])
-	metal_masses = data_source['Metal_MassMsun']
+	#metal_masses = data_source['Metal_MassMsun']
 	#DOING VOLUMES BUT CALLED METAL_MASSES FOR EASE!
 	#metal_masses = data_source['CellVolume']/(pf['cm']**3.0)*(pf['pc']**3.0)
+	#DOING DENSITY BUT CALLED METAL_MASSES FOR EASE!
+#	metal_masses = data_source['Density']
+	#DOING TOTAL GAS MASS BUT CALLED METAL_MASSES FOR EASE!
+	metal_masses = data_source['CellMassMsun']
 	dr = rvirKPC/bins
 	rp_r = np.arange(bins)*dr + dr/2.0
 	rp_vals = np.zeros((len(metals),bins))
@@ -22,7 +26,7 @@ def build_radial_profile_matrix(pf,data_source,center,rvirKPC,bins):
 		maxrad = minrad + dr
 		thisindex = (radii>=minrad) * (radii<maxrad)
 		idx = np.where(metallicities[thisindex] > 0.)[0]
-		#LETS ALSO NORMALIZE BASED OFF THE TOTAL QUANTITY IN THAT ANNULUS
+		#LETS NORMALIZE BASED OFF THE TOTAL QUANTITY IN THAT ANNULUS
        		total_mass = np.sum(metal_masses[thisindex])
 		rp_vals[0,irad] = metal_masses[thisindex][idx].sum()
 		rp_vals[0,irad] = rp_vals[0,irad]/total_mass
@@ -59,9 +63,11 @@ def run_many_halos(len):
 
 		rpvals = build_radial_profile_matrix(pf,data_source,data['centers'][i],rvirKPC,100.)
 		
-		fileout = 'MassMetalProfiles/halo'+str(data['halonum'][i])+'_massmetalprofile_normal.png'
+		#fileout = 'MassMetalProfiles/halo'+str(data['halonum'][i])+'_massmetalprofile_normal.png'
 		#fileout = 'VolMetalProfiles/halo'+str(data['halonum'][i])+'_volmetalprofile_normal.png'		
-
+		#fileout = 'DensMetalProfiles/halo'+str(data['halonum'][i])+'_densmetalprofile_normal.png'
+		fileout = 'GasMetalProfiles/halo'+str(data['halonum'][i])+'_gasmetalprofile_normal.png'
+	
 		plot_rp_matrix(rpvals,rvirKPC,fileout)
 		i = i + 1
 

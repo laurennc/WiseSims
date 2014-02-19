@@ -83,7 +83,7 @@ def plot_factors(halonum,factorname,fileout,fileout2):
 
 	count = 0
 	while count < len(data0['redshift']):
-                plt.plot(np.log10(np.zeros(want)+data0['time'][count]),100.*(data0[factorname][count][:6]-data3[factorname][count][:6]),'o')
+                plt.plot(np.log10(np.zeros(want)+data0['time'][count]),(data0[factorname][count][:6]-data3[factorname][count][:6]),'o')
                 count = count + 1
         plt.ylabel(factorname+' Difference')
         plt.xlabel('log(time) (yrs)')

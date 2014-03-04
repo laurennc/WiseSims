@@ -172,4 +172,6 @@ def make_radial_profile(pf,data_source,center,rvirKPC,bins):
 		rp_vals = np.append(rp_vals,np.average(make_solar_metallicity(data_source['Metallicity'][thisindex])))
 	return rp_r,rp_vals
 
+def gauss_function(x,a,mu,sigma):
+	return a*np.exp(-(x-mu)**2.0/(2.0*sigma**2.0))
 

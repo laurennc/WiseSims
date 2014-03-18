@@ -7,7 +7,7 @@ from lauren import *
 #instead of doing percents in each radius bin, can use a universally normalized quantity --- either just summing the mass directly or normalizing it to the total mass instead of the mass within the bin
 
 
-def build_radial_profile_matrix(pf,data_source,center,rvirKPC,metal_bins,radii_bins):
+def build_radial_profile_matrix(pf,data_source,center,rvirKPC,field,metal_bins,radii_bins):
 	metals = np.linspace(0,-6,num=metal_bins)
 	radii = distance_from_center(data_source['x'],data_source['y'],data_source['z'],center)*pf['kpc']
 	metallicities = make_solar_metallicity(data_source['Metallicity'])
@@ -18,7 +18,8 @@ def build_radial_profile_matrix(pf,data_source,center,rvirKPC,metal_bins,radii_b
 	#DOING VOLUMES BUT CALLED METAL_MASSES FOR EASE!
 	#metal_masses = data_source['CellVolume']/(pf['cm']**3.0)*(pf['pc']**3.0)
 	#DOING TOTAL GAS MASS BUT CALLED METAL_MASSES FOR EASE!
-	metal_masses = data_source['CellMassMsun']
+	#metal_masses = data_source['CellMassMsun']
+	metal_masses = data_source[field]
 	dr = rvirKPC/radii_bins
 	rp_r = np.arange(radii_bins)*dr + dr/2.0
 	rp_vals = np.zeros((metal_bins,radii_bins))
@@ -71,13 +72,17 @@ def run_many_halos(len):
 		data_source = pf.h.sphere(data['centers'][i],data['rvirs'][i]/pf['cm'])
 		rvirKPC = data['rvirs'][i]/pf['cm']*pf['kpc']
 
-		rpvals, sam_Z = build_radial_profile_matrix(pf,data_source,data['centers'][i],rvirKPC,metal_bins,radii_bins)
-		
+		rpvals, sam_Z = build_radial_profile_matrix(pf,data_source,data['centers'][i],rvirKPC,'CellMassMsun',metal_bins,radii_bins)
 		per_vals = find_percentile_values(rpvals,0.25,0.75,metal_bins,radii_bins,0.02)
 		print 'iax is ',iax
 		ax1 = fig.add_subplot(iax)
 		fileout = 'Z_rp_quartiles_halo'+str(data['halonum'][i])+'.png'
-		plot_percentile_values(ax1,per_vals,data['halonum'][i],rvirKPC,radii_bins,fileout)	
+		plot_percentile_values(ax1,per_vals,data['halonum'][i],rvirKPC,radii_bins,fileout,'#389BBc','#33CCFF')	
+
+
+		rpvals, sam_Z = build_radial_profile_matrix(pf,data_source,data['centers'][i],rvirKPC,'CellVolume',metal_bins,radii_bins)
+		per_vals = find_percentile_values(rpvals,0.25,0.75,metal_bins,radii_bins,0.02)
+		plot_percentile_values(ax1,per_vals,data['halonum'][i],rvirKPC,radii_bins,fileout,'#E65C8A','#FFA3C2')
 
 		#plot_rp_matrix(rpvals,rvirKPC,sam_Z,fileout)
 		i = i + 1
@@ -113,14 +118,14 @@ def find_percentile_values(rp,lower,upper,metal_bins,radii_bins,tolerance):
 	return per_vals
 	
 
-def plot_percentile_values(ax1,per_vals,halonum,rvirKPC,radii_bins,fileout):
+def plot_percentile_values(ax1,per_vals,halonum,rvirKPC,radii_bins,fileout,colorline,colorfill):
 	#y_low = per_vals[0,*], y_med=per_vals[1,*],y_high=per_vals[2,*]
 	dr = rvirKPC/radii_bins
 	rp_r = np.arange(radii_bins)*dr + dr/2.0
-	ax1.plot(rp_r,per_vals[0,:],'k')
-	ax1.plot(rp_r,per_vals[2,:],'k')
-	ax1.plot(rp_r,per_vals[1,:],'k',lw=2.5)
-	ax1.fill_between(rp_r,per_vals[0,:],per_vals[2,:],color='grey',alpha='0.5')
+	ax1.plot(rp_r,per_vals[0,:],color=colorline)
+	ax1.plot(rp_r,per_vals[2,:],color=colorline)
+	ax1.plot(rp_r,per_vals[1,:],color=colorline,lw=2.5)
+	ax1.fill_between(rp_r,per_vals[0,:],per_vals[2,:],color=colorfill,alpha='0.30')
 	ax1.text(0.2,-5,'Halo '+str(halonum))
 	ax1.set_ylim(-6,0)
 	#plt.savefig(fileout)

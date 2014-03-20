@@ -139,8 +139,11 @@ while (count < len(halos_to_run)):
 		loopthrough = loopthrough + 1
 	fillFactors = vstack((fillFactors,fillFactorsTemp))
 
-	goodvalue = 1e-6
-	indices = where(all_clumps[index]['Metallicity'] >= goodvalue)
+#examine different radii for a given metallicity
+	goodvalue = -6
+	eps = 0.25
+	metals_here = make_solar_metallicity(all_clumps[index]['Metallicity'])
+	indices = where((metals_here >= goodvalue-eps) & (metals_here <= goodvalue + eps))
 	if (len(indices) > 0):
 		print all_clumps[index]['Radius'][indices].max()*pf['kpc']/pf['cm']
 		zMaxRadius = append(zMaxRadius,all_clumps[index]['Radius'][indices].max()*pf['kpc']/pf['cm'])

@@ -43,7 +43,8 @@ fillFactors = array([0.,0.,0.,0.,0.,0.,0.])
 avgRadius = [0.]
 maxRadius = [0.]
 minRadius = [0.]
-zcutRadius = [0.]
+zMaxRadius = [0.]
+zMinRadius = [0.]
 massRadius = [0.]
 #SFR quantities
 sfrAvg = [0.]
@@ -142,9 +143,11 @@ while (count < len(halos_to_run)):
 	indices = where(all_clumps[index]['Metallicity'] >= goodvalue)
 	if (len(indices) > 0):
 		print all_clumps[index]['Radius'][indices].max()*pf['kpc']/pf['cm']
-		zcutRadius = append(zcutRadius,all_clumps[index]['Radius'][indices].max()*pf['kpc']/pf['cm'])
+		zMaxRadius = append(zMaxRadius,all_clumps[index]['Radius'][indices].max()*pf['kpc']/pf['cm'])
+		zMinRadius = append(zMinRadius,all_clumps[index]['Radius'][indices].min()*pf['kpc']/pf['cm'])
 	else:
-		zcutRadius = append(zcutRadius,0.0)
+		zMaxRadius = append(zMaxRadius,0.0)
+		zMinRadius = append(zMinRadius,0.0)
 
 	dist = ((all_clumps[index]['x']-center[0])**2.0+(all_clumps[index]['y']-center[1])**2.0+(all_clumps[index]['z']-center[2])**2.0)**0.5
 	idx = where(all_clumps[index]['Metallicity'] >= 1e-6)
@@ -179,7 +182,8 @@ sfrAvg = delete(sfrAvg,0)
 sfrMax = delete(sfrMax,0)
 clump_index = delete(clump_index,0)
 t_start = delete(t_start,0)
-zcutRadius = delete(zcutRadius,0)
+zMaxRadius = delete(zMaxRadius,0)
+zMinRadius = delete(zMinRadius,0)
 dilmass6 = delete(dilmass6,0)
 dilmass17 = delete(dilmass17,0)
 dilmassvir = delete(dilmassvir,0)
@@ -204,7 +208,8 @@ data['sfrAvg'] = sfrAvg
 data['sfrMax'] = sfrMax
 data['clump_index'] = clump_index
 data['t_start'] = t_start
-data['zcutRadius'] = zcutRadius
+data['zMaxRadius'] = zMaxRadius
+data['zMinRadius'] = zMinRadius
 data['dilmass6'] = dilmass6
 data['dilmass17'] = dilmass17
 data['dilmassvir'] = dilmassvir

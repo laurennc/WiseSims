@@ -33,26 +33,32 @@ ravgcomp = ravg/lauren_r
 rmaxcomp = rmax/lauren_r
 rmincomp = rmin/lauren_r
 
-#errsMAXS = np.zeros(len(maxs)*2)
-#count = 0
-#for i in range(len(maxs)):
-#        errsMAXS[count] = rmin[maxs[i]]
-#        count = count + 1
-#        errsMAXS[count] = rmax[maxs[i]]
-#        count = count + 1
+fig,ax = plt.subplots(nrows=1,ncols=2)
+fig.set_size_inches(11,5)
 
+ax[0].plot(np.log10(data['star_masses'])[indp],ravgcomp[indp],'rs',label='Indp')
+ax[0].errorbar(np.log10(data['star_masses'])[indp],ravgcomp[indp],yerr=[rmincomp[indp],rmaxcomp[indp]],color='red',fmt='.')
+ax[0].plot(np.log10(data['star_masses'])[grps],ravgcomp[grps],'bo',label='Groups')
+ax[0].errorbar(np.log10(data['star_masses'])[grps],ravgcomp[grps],yerr=[rmincomp[grps],rmaxcomp[grps]],color='blue',fmt='.')
+ax[0].plot(np.log10(data['star_masses'])[maxs],ravgcomp[maxs],'g*',markersize=13.5,label='Max Grp Mem')
+ax[0].errorbar(np.log10(data['star_masses'])[maxs],ravgcomp[maxs],yerr=[rmincomp[maxs],rmaxcomp[maxs]],color='green',fmt='.')
+ax[0].axhline(y=1,linewidth=1.5,linestyle='--',color='k')
+ax[0].set_xlabel('log(Stellar Mass)')
+ax[0].set_ylabel('R Avg / Tegmark')
+ax[0].legend()
 
-plt.plot(np.log10(data['star_masses'])[indp],ravgcomp[indp],'rs',label='Indp')
-plt.errorbar(np.log10(data['star_masses'])[indp],ravgcomp[indp],xerr=errsINDP,color='red')
-plt.plot(np.log10(data['star_masses'])[grps],ravgcomp[grps],'bo',label='Groups')
-plt.errorbar(np.log10(data['star_masses'])[grps],ravgcomp[grps],xerr=errsGRPS,color='blue')
-plt.plot(np.log10(data['star_masses'])[maxs],ravgcomp[maxs],'g*',markersize=13.5,label='Max Grp Mem')
-plt.errorbar(np.log10(data['star_masses'])[maxs],ravgcomp[maxs],xerr=errsMAXS,color='green')
-#plt.plot(np.arange(6)+2.5,np.zeros(6)+1,'k--',linewidth=1.5)
-plt.axhline(y=1,linewidth=1.5,linestyle='--',color='k')
-plt.xlabel('log(Stellar Mass)')
-plt.ylabel('R Avg / Tegmark')
-plt.legend()
+ax[1].plot(np.log10(data['star_masses'])[indp],ravgcomp[indp],'rs',label='Indp')
+ax[1].errorbar(np.log10(data['star_masses'])[indp],ravgcomp[indp],yerr=[rmincomp[indp],rmaxcomp[indp]],color='red',fmt='.')
+ax[1].plot(np.log10(data['star_masses'])[grps],ravgcomp[grps],'bo',label='Groups')
+ax[1].errorbar(np.log10(data['star_masses'])[grps],ravgcomp[grps],yerr=[rmincomp[grps],rmaxcomp[grps]],color='blue',fmt='.')
+ax[1].plot(np.log10(data['star_masses'])[maxs],ravgcomp[maxs],'g*',markersize=13.5,label='Max Grp Mem')
+ax[1].errorbar(np.log10(data['star_masses'])[maxs],ravgcomp[maxs],yerr=[rmincomp[maxs],rmaxcomp[maxs]],color='green',fmt='.')
+ax[1].axhline(y=1,linewidth=1.5,linestyle='--',color='k')
+ax[1].set_xlabel('log(Stellar Mass)')
+ax[1].set_ylabel('R Avg / Tegmark')
+ax[1].set_yscale('log')
+#ax[1].legend()
+
 plt.savefig('best_tegmark_compare_avg_fixed_werrs.eps')
 plt.close()
 

@@ -105,5 +105,41 @@ def basic_slice_plot(pf,center,radius,dim,fileout):
 	sp.save(fileout)
 	return
 
+def plot_tegmark_radii(pf,data,idx,field,dim,width,tegradii,fileout):
+	radius = data['rvirs'][idx]/pf['cm']
+	center = data['centers'][idx]
+	pc = PlotCollection(pf,center=center)
+	pc.add_slice(field,dim)
+	pc.set_width(width,'kpc')
+
+	pc.plots[0].modify['point'](center,'.')
+	pc.plots[0].modify['point'](data['CofMs'][idx],'x')
+	
+	pc.plots[0].modify['sphere'](center,radius,circle_args={'lw':2.0,'color':'white'})
+	pc.plots[0].modify['sphere'](center,tegradii[0]/pf['kpc'],circle_args={'ls':'dashed','lw':2.0,'color':'white'})
+	pc.plots[0].modify['sphere'](center,tegradii[1]/pf['kpc'],circle_args={'ls':'dotted','lw':2.0,'color':'white'})
+	pc.plots[0].modify['sphere'](center,tegradii[2]/pf['kpc'],circle_args={'ls':'dotted','lw':2.0,'color':'white'})
+	
+	dist = distance_from_center(data['centers'][:,0],data['centers'][:,1],data['centers'][:,2],center)
+	idc = np.where(dist*pf['kpc'] <= tegradii[2])[0]
+	for val in idc:
+		#pc.plots[0].modify['sphere'](data['centers'][val],data['rvirs'][val]/pf['kpc'],circle_args={'ls':'dashdot','color':'green','lw':2.0})	
+		pc.plots[0].modify['point'](data['centers'][val],str(data['halonum'][val]))
+
+	print 'all marked'
+	pc.set_zlim(-6,0)
+	pc.set_cmap('spectral')
+	pc.save(fileout)
+	return
+
+def mark_nearby_halos(data,plotter,halonum,maxrad):
+	#want to mark nearby halos and their virial radii on the slice plots
+	#If I do it this way, I'm going to be plotting the host halo twice which I don't think should be a problem but noted here in case
+	dist = distance_from_center(data['centers'][:][0],data['centers'][:][1],data['centers'][:][2],data['centers'][halonum])
+	idx = np.where(dist <= maxrad)[0]
+	for i in idx:
+		plotter.modify['sphere'](data['centers'][i],data['rvirs'][i],circle_args={'ls':'dashdot','color':'green','lw':2.0})
+		plotter.modify['point'](data['centers'][i],'c')
+	return
 
 

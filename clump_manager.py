@@ -8,24 +8,22 @@ import matplotlib.pyplot as plt
 
 
 class ClumpManager:
-	def __init__(self,pf, halonum, center, radius, width, halos):
+	def __init__(self,pf, halonum, center, radius, width, clump_index):
 		self.pf = pf
 		self.halonum = halonum
 		self.center = center
 		self.radius = radius
 		self.width = width
 
-		self.cindex = np.where(halos['halonum'] == self.halonum)
-		self.cindex = self.cindex[0][0]
-		#add a plot collection so all the methods can simply edit the plots
-		self.pc = 'woot'#PlotCollection(self.pf,center=self.center)
+		self.cindex = clump_index
 	
 		#do the clump finding in here!
-		filein = '../WiseSimsData/pickles/halo'+str(self.halonum)+'_clumps.cpkl'
+		#filein = '../WiseSimsData/pickles/halo'+str(self.halonum)+'_clumps.cpkl'
+		filein = 'halo'+str(self.halonum)+'_clumps_Z6.cpkl'
 		data2 = cPickle.load(open(filein,'rb'))
 		master_clump = data2[1]
 		self.all_clumps = get_lowest_clumps(master_clump)
-		self.clump = self.all_clumps[int(halos['clump_index'][self.cindex])]
+		self.clump = self.all_clumps[self.cindex]
 	
 	def make_main_plot(self, plottype, dim, field, unit):
 		self.pc = PlotCollection(self.pf,center=self.center)
@@ -42,17 +40,26 @@ class ClumpManager:
 			print 'Plot type should be either proj or slice'
 			return 
 		
-		self.pc.set_width(self.width,'kpc')
-		clump_plot=[self.clump]
-		rad = self.radius/self.pf['cm']
-		
-		self.pc.plots[unit].modify['clumps'](clump_plot)
-		self.pc.plots[unit].modify['point'](self.center,'o')
-		self.pc.plots[unit].modify['point'](self.clump.quantities['CenterOfMass'](),'x')
-		self.pc.plots[unit].modify['sphere'](self.center,rad)
 		self.pc.set_cmap('spectral')
+		self.pc.set_width(self.width,'kpc')
+		return
+	
+	def mark_virial_radius(self,unit):
+		rad = self.radius/self.pf['cm']
+		self.pc.plots[unit].modify['point'](self.center,'o')
+		self.pc.plots[unit].modify['sphere'](self.center,rad)
 		return 
-		
+	
+	def mark_main_clump(self,unit):
+		clump_plot=[self.clump]
+		self.pc.plots[unit].modify['clumps'](clump_plot)
+		self.pc.plots[unit].modify['point'](self.clump.quantities['CenterOfMass'](),'x')
+		return
+
+	def mark_all_clumps(self,unit):
+		self.pc.plots[unit].modify['clumps'](self.all_clumps)
+		return	
+
 	def save_plot(self,fileout):
 		self.pc.save(fileout)
 		return 

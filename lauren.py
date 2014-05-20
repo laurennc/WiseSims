@@ -89,12 +89,12 @@ def sfh_plot(sfr,fileout):
 	plt.close()
 	return True
 
-def plot_stellar_t_vs_Z(pf,t,metals,fileout):
+def plot_stellar_t_vs_Z(pf,t,metals,fileout,mark_timesteps=False,timesteps=0.):
 	#t and metals should be the values from the SIMULATIONS 
 	#otherwise, these corrections don't make sense
 	#t = t * pf['Time'] / YEAR
 	metals = np.log10(metals)-np.log10(0.02)	
-	t = np.log10(pf['Time']*t/YEAR)
+	#t = np.log10(pf['Time']*t/YEAR)
 
 	fig,axes = plt.subplots(2,1,sharex=True)
 	fig.subplots_adjust(hspace=0.1,wspace=0.1)
@@ -105,6 +105,14 @@ def plot_stellar_t_vs_Z(pf,t,metals,fileout):
 	axes[1].set_xlabel('Particle Creation Time (yrs)')
 	axes[1].set_ylabel('Metallicity')
 	axes[1].set_ylim(-4,1)
+
+	if mark_timesteps:
+		idx = np.where((timesteps['sim_time'] <= t.max()) & (timesteps['sim_time'] >= t.min()))[0]
+		for val in idx:
+			axes[0].axvline(x=timesteps['sim_time'][val],linestyle='dashed',color='red')
+			axes[1].axvline(x=timesteps['sim_time'][val],linestyle='dashed',color='red')
+			axes[0].text(timesteps['sim_time'][val],-2,str(time_steps['stamp'][val]))
+			axes[1].text(timesteps['sim_time'][val],-2,str(time_steps['stamp'][val]))
 
 	fig.savefig(fileout)
 	plt.close()
@@ -175,3 +183,47 @@ def make_radial_profile(pf,data_source,center,rvirKPC,bins):
 def gauss_function(x,a,mu,sigma):
 	return a*np.exp(-(x-mu)**2.0/(2.0*sigma**2.0))
 
+def load_tree(hid, fn):
+    if not os.path.exists(fn):
+        print "Cannot find %s" % fn
+        sys.exit()
+    lines = open(fn, "r").readlines()
+
+    # Search for tree
+    start_line = None
+    rank = -hid
+    num = 0
+    if hid <= 0:
+        for l in lines:
+            if l.startswith("#tree"):
+                if num == -hid:
+                    hid = int(l.split()[1])
+                    break
+                num += 1
+        print "Halo %d (by mass) has ID %d" % (rank, hid)
+
+    header = "#tree %d\n" % hid
+    for i,l in enumerate(lines):
+        if l.startswith("#Omega_M"):
+            h = float(l.split("=")[3])
+        if l == header:
+            start_line = i+1
+        elif l.startswith("#tree") and start_line != None:
+            end_line = i
+            break
+
+    # Load data from strings
+    nleaves = end_line - start_line
+    nfields = len(lines[start_line].split())
+    data = na.empty((nleaves, nfields))
+    for i in range(start_line, end_line):
+        data[i-start_line,:] = map(float, lines[i].split())
+    del lines
+    return hid, data
+
+def read_in_timesteps(filein):
+	data = np.genfromtxt(filein,delimiter=' ')
+	timesteps = {}
+	timesteps['stamp'] = data[:,0]
+	timesteps['sim_time'] = data[:,1]
+	return timesteps

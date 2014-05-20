@@ -43,8 +43,8 @@ fillFactors = array([0.,0.,0.,0.,0.,0.,0.])
 avgRadius = [0.]
 maxRadius = [0.]
 minRadius = [0.]
-zMaxRadius = [0.]
-zMinRadius = [0.]
+#zMaxRadius = [0.]
+#zMinRadius = [0.]
 massRadius = [0.]
 #SFR quantities
 sfrAvg = [0.]
@@ -66,7 +66,7 @@ while (count < len(halos_to_run)):
 	print 'Analyzing halo number: ',halonum
 
 	radius, mass, center = r200(pf, halos['pos'][halonum,:],halos['mass'][halonum],verbose=False)
-	filein = '/u/10/l/lnc2115/vega/data/Wise/pickles/halo'+str(halonum)+'_clumps.cpkl'
+	filein = '/u/10/l/lnc2115/vega/data/Wise/pickles/halo'+str(halonum)+'_clumps_Z6.cpkl'
 	data = cPickle.load(open(filein,'rb'))
 	master_clump = data[1]
 	mvirs = append(mvirs,mass)	
@@ -140,18 +140,18 @@ while (count < len(halos_to_run)):
 	fillFactors = vstack((fillFactors,fillFactorsTemp))
 
 #examine different radii for a given metallicity
-	goodvalue = -6
-	eps = 0.25
-	metals_here = make_solar_metallicity(all_clumps[index]['Metallicity'])
-	indices = where((metals_here >= goodvalue-eps) & (metals_here <= goodvalue + eps))
-	if (len(indices) > 0):
-		print all_clumps[index]['Radius'][indices].max()*pf['kpc']/pf['cm']
-		zMaxRadius = append(zMaxRadius,all_clumps[index]['Radius'][indices].max()*pf['kpc']/pf['cm'])
-		zMinRadius = append(zMinRadius,all_clumps[index]['Radius'][indices].min()*pf['kpc']/pf['cm'])
-	else:
-		zMaxRadius = append(zMaxRadius,0.0)
-		zMinRadius = append(zMinRadius,0.0)
-
+#	goodvalue = -6
+#	eps = 0.25
+#	metals_here = make_solar_metallicity(all_clumps[index]['Metallicity'])
+#	indices = where((metals_here >= goodvalue-eps) & (metals_here <= goodvalue + eps))
+#	if (len(indices) > 0):
+#		print all_clumps[index]['Radius'][indices].max()*pf['kpc']/pf['cm']
+#		zMaxRadius = append(zMaxRadius,all_clumps[index]['Radius'][indices].max()*pf['kpc']/pf['cm'])
+#		zMinRadius = append(zMinRadius,all_clumps[index]['Radius'][indices].min()*pf['kpc']/pf['cm'])
+#	else:
+#		zMaxRadius = append(zMaxRadius,0.0)
+#		zMinRadius = append(zMinRadius,0.0)
+#
 	dist = ((all_clumps[index]['x']-center[0])**2.0+(all_clumps[index]['y']-center[1])**2.0+(all_clumps[index]['z']-center[2])**2.0)**0.5
 	idx = where(all_clumps[index]['Metallicity'] >= 1e-6)
 	temp = where(dist[idx] > radius/pf['cm'])
@@ -185,8 +185,8 @@ sfrAvg = delete(sfrAvg,0)
 sfrMax = delete(sfrMax,0)
 clump_index = delete(clump_index,0)
 t_start = delete(t_start,0)
-zMaxRadius = delete(zMaxRadius,0)
-zMinRadius = delete(zMinRadius,0)
+#zMaxRadius = delete(zMaxRadius,0)
+#zMinRadius = delete(zMinRadius,0)
 dilmass6 = delete(dilmass6,0)
 dilmass17 = delete(dilmass17,0)
 dilmassvir = delete(dilmassvir,0)
@@ -211,13 +211,13 @@ data['sfrAvg'] = sfrAvg
 data['sfrMax'] = sfrMax
 data['clump_index'] = clump_index
 data['t_start'] = t_start
-data['zMaxRadius'] = zMaxRadius
-data['zMinRadius'] = zMinRadius
+#data['zMaxRadius'] = zMaxRadius
+#data['zMinRadius'] = zMinRadius
 data['dilmass6'] = dilmass6
 data['dilmass17'] = dilmass17
 data['dilmassvir'] = dilmassvir
 
-fileout = 'clump_dict.cpkl'
+fileout = 'clump_dict_Z6.cpkl'
 cPickle.dump(data,open(fileout,'wb'),protocol=-1)
 
 

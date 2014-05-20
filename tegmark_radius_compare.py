@@ -1,6 +1,6 @@
 from lauren import *
 
-data = cPickle.load(open('/u/10/l/lnc2115/vega/repos/WiseSims/clump_dict.cpkl','rb'))
+data = cPickle.load(open('/u/10/l/lnc2115/vega/repos/WiseSims/clump_dict_Z6.cpkl','rb'))
 
 #grp1 = [0,1,14,15,19,20,23]
 #grp2 = [4,6,7,11,21]
@@ -26,8 +26,10 @@ r_scale = return_snwinds_scaled_radii(data['t_start'],data['star_masses'])
 lauren_r = [2.78808,2.83108,2.71597,1.58790,2.22833,2.08742,1.48833,1.48833,0.292994,0.284480,1.27494,2.50799,0.106331,1.69834,2.65037,1.34190,0.837878,0.730189,0.309501,0.913325,0.582502,1.48833,0.922523,0.553023]
 
 ravg = data['avgRadius']/r_scale
-rmin = data['zMinRadius']/r_scale
-rmax = data['zMaxRadius']/r_scale
+#rmin = data['zMinRadius']/r_scale
+#rmax = data['zMaxRadius']/r_scale
+rmin = data['minRadius']/r_scale
+rmax = data['maxRadius']/r_scale
 
 ravgcomp = ravg/lauren_r
 rmaxcomp = rmax/lauren_r
@@ -59,7 +61,8 @@ ax[1].set_ylabel('R Avg / Tegmark')
 ax[1].set_yscale('log')
 #ax[1].legend()
 
-plt.savefig('best_tegmark_compare_avg_fixed_werrs.eps')
+#plt.savefig('best_tegmark_compare_avg_fixed_werrs.eps')
+plt.savefig('best_tegmark_compar_Z6.eps')
 plt.close()
 
 

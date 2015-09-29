@@ -48,7 +48,7 @@ def sfr_halo(pf,virial_sphere):
 	ct = ct[stars]
 	sm = sm[stars]
 	total_volume = virial_sphere.quantities['TotalQuantity']('CellVolume')
-	sfr = StarFormationRate(pf,star_mass=sm,star_creation_time=ct,volume=total_volume)
+	sfr = StarFormationRate(pf,data_source=virial_sphere,star_mass=sm,star_creation_time=ct,volume=total_volume)
 	return sfr
 
 def sfr_quants(region):

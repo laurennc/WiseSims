@@ -12,8 +12,8 @@ pf = load('/u/10/l/lnc2115/vega/data/Wise/DD0062/output_0062')
 halos = readhalos(foffile='/u/10/l/lnc2115/vega/data/Wise/groups_02797.dat')
 field = 'Metallicity'
 step = 2.0
-c_min = 1.0e-17
-c_max = 1.0e-15
+c_min = 1.0*10.**-5.5#1.0e-17
+c_max = 1.0*10.**-6.5#1.0e-15
 function = 'self.data["Metallicity"].size > 5e+2'
 #function = 'self.data["Metallicity"].size > 5e+3'
 
@@ -58,7 +58,7 @@ dilmass17 = [0.]
 dilmassvir = [0.]
 
 count = 0
-halos_to_run = [0,1,2,3,4,5,6,7,9,15,16,17,22,25,26,33,35,36,42,48,59,188,362,900]
+halos_to_run = [0,1,2,3,4,5,6,7,8,9,11,13,15,16,17,22,25,26,33,35,36,42,48,59,188,362,900]
 
 while (count < len(halos_to_run)):
 	halonum = halos_to_run[count]
@@ -66,7 +66,7 @@ while (count < len(halos_to_run)):
 	print 'Analyzing halo number: ',halonum
 
 	radius, mass, center = r200(pf, halos['pos'][halonum,:],halos['mass'][halonum],verbose=False)
-	filein = '/u/10/l/lnc2115/vega/data/Wise/pickles/halo'+str(halonum)+'_clumps_Z6.cpkl'
+	filein = '/u/10/l/lnc2115/vega/data/Wise/pickles/clumps/halo'+str(halonum)+'_clumps_Z6.cpkl'
 	data = cPickle.load(open(filein,'rb'))
 	master_clump = data[1]
 	mvirs = append(mvirs,mass)	
@@ -81,15 +81,16 @@ while (count < len(halos_to_run)):
 	stars = (ct > 0)
         ct = ct[stars]
         sm = sm[stars]
-	total_volume = data_source.quantities['TotalQuantity']('CellVolume')
+	#total_volume = np.array(data_source.quantities['TotalQuantity']('CellVolume'))
 
         if (len(stars[where(stars==True)]) == 0):
                sfrAvg = append(sfrAvg,0.0)
                sfrMax = append(sfrMax,0.0)
                t_start = append(t_start,0.0)
         else:
-               sfr = StarFormationRate(pf,star_mass=sm,star_creation_time=ct,volume=total_volume)
-               sfrAvg = append(sfrAvg,average(sfr.Msol_yr))
+               #sfr = StarFormationRate(pf,star_mass=sm,star_creation_time=ct,volume=total_volume)
+               sfr = StarFormationRate(pf,data_source=data_source)
+	       sfrAvg = append(sfrAvg,average(sfr.Msol_yr))
                sfrMax = append(sfrMax,sfr.Msol_yr.max())
 	       t_start_here = min(ct)*pf['Time']/YEAR
                t_start = append(t_start,t_start_here)
@@ -126,7 +127,8 @@ while (count < len(halos_to_run)):
 	minRadius = append(minRadius,all_clumps[index]['Radius'].min()/pf['cm']*pf['kpc'])
 	massRadius = append(massRadius,all_clumps[index].quantities['WeightedAverageQuantity']('Radius','CellMassMsun')/pf['cm']*pf['kpc'])
 
-	metallicities = make_solar_metallicity(data_source['Metallicity'])
+#	metallicities = make_solar_metallicity(data_source['Metallicity'])
+	metallicities = data_source['Metallicity']
 	volumes = data_source['CellVolume']
 	total_volume = volumes.sum()
 

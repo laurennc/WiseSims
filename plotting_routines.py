@@ -143,3 +143,12 @@ def mark_nearby_halos(data,plotter,halonum,maxrad):
 	return
 
 
+def plotting_surrounding_densities():
+	clump_data = cPickle.load(open('clump_dict_Z6.cpkl','rb'))
+	fig,ax = plt.subplots(1,2,sharey=True)
+	ax[0].plot(np.log10(clump_data['star_masses']),np.log10(clump_data['avgDens_avgR']),'bo')
+	ax[1].plot(np.log10(clump_data['star_masses']),np.log10(clump_data['avgDens_maxR']),'ro')
+	
+	plt.savefig('density_outside_bubble_estimate.png')
+	plt.close()
+	return

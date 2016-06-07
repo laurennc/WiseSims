@@ -30,7 +30,7 @@ class ClumpManager:
 		if field=='Density':
 			self.pc.set_zlim(1e-27,1e-22)
 		if field=='Metallicity':
-			self.pc.set_zlim(1e-6,1)		
+			self.pc.set_zlim(1e-7,1)		
 
 		if (plottype == 'proj'):
 			self.pc.add_projection(field,dim)

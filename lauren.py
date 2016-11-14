@@ -31,13 +31,14 @@ def clump_contours(pf,center,radius,field,dim,clump,width,fileout,plottype):
 
 	pc.set_width(width,'kpc')
 	clump_plot = [clump]
-	pc.plots[0].modify['clumps'](clump_plot)
-	pc.plots[0].modify['point'](center,'o')
-	pc.plots[0].modify['point'](clump.quantities['CenterOfMass'](),'x')
-	pc.plots[0].modify['sphere'](center,radius)
-	pc.set_zlim(-18,0)
+	pc.plots[0].modify['clumps'](clump_plot,plot_args={'colors':'DarkOrange'})#,'linewidth':2.5})
+	pc.plots[0].modify['point'](center,'o',text_args={'color':'Purple'})
+	pc.plots[0].modify['point'](clump.quantities['CenterOfMass'](),'x',text_args={'color':'DarkOrange'})
+	pc.plots[0].modify['sphere'](center,radius,circle_args={'color':'Purple'})#,'linestyle':'--','linewidth':2.5})
+	pc.set_cmap('Blues_r')
+	pc.set_zlim(10**-8,1)
 #	pc.set_cmap('spectral')
-	pc.set_cmap('cool')
+#	pc.set_cmap('binary')
 	pc.save(fileout)
 	return True
 

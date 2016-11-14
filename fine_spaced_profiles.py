@@ -10,7 +10,7 @@ from lauren import *
 def build_radial_profile_matrix(pf,data_source,center,rvirKPC,field,metal_bins,radii_bins):
 	metals = np.linspace(0,-6,num=metal_bins)
 	radii = distance_from_center(data_source['x'],data_source['y'],data_source['z'],center)*pf['kpc']
-	metallicities = make_solar_metallicity(data_source['Metallicity'])
+	metallicities = np.log10(data_source['Metallicity'])
 
 	#WANT TO CALCULATE METALLICITY THAT WOULD BE USED IN SAMS
 	sam_Z = make_solar_metallicity(np.sum(data_source['Metal_MassMsun'])/np.sum(data_source['CellMassMsun']))
@@ -59,15 +59,15 @@ def plot_rp_matrix(rp_vals,rvirKPC,sam_Z,fileout):
 	plt.savefig(fileout)
 	plt.close()
 
-def run_many_halos(len):
+def run_many_halos(halo_array):
 	pf = load('/u/10/l/lnc2115/vega/data/Wise/DD0062/output_0062')
 	data = cPickle.load(open('clump_dict.cpkl','rb'))
 	radii_bins = 20.
 	metal_bins = 700.
 	i = 0
-	iax = 331
+	iax = 311
 	fig = plt.figure(figsize=(10,10))
-	while i < len:
+	while i < len(halo_array):
 		print 'i is ',i
 		data_source = pf.h.sphere(data['centers'][i],data['rvirs'][i]/pf['cm'])
 		rvirKPC = data['rvirs'][i]/pf['cm']*pf['kpc']
@@ -87,7 +87,7 @@ def run_many_halos(len):
 		#plot_rp_matrix(rpvals,rvirKPC,sam_Z,fileout)
 		i = i + 1
 		iax = iax + 1
-	fileout = 'Z_rp_quartiles.png'
+	fileout = 'Z_rp_quartiles_paper.pdf'
 	plt.savefig(fileout)
 	#plt.close()
 

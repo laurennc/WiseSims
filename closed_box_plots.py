@@ -1,38 +1,44 @@
+import matplotlib
+matplotlib.use('Agg')
+
 import matplotlib.pyplot as plt
 import numpy as np
 import cPickle 
 
 data = cPickle.load(open('global_halo_metal_total.cpkl','rb'))
 
-xlen,ylen = 3,1
+xlen,ylen = 2,1
 fig,ax = plt.subplots(ylen,xlen)#,sharey=True)
-fig.set_size_inches(11,3)
+fig.set_size_inches(6,3)
 ax = ax.flat
 
 fileout = 'closedbox_paper_total_weightmvol.pdf'
 
 x = np.arange(-3.5,0.5,0.001)
 
-ax[0].plot(data['avg_logZ_gas_weightvol'],data['predicted_Z'],'ko')
+#ax[0].plot(data['avg_logZ_gas_weightvol'],data['predicted_Z'],'ko')
+ax[0].plot(data['predicted_Z'],data['avg_logZ_gas_weightvol'],'ko')
 ax[0].plot(x,x,'--',color='Grey',linewidth=2)
-ax[0].set_xlim(-6,0)
-ax[0].set_ylim(-3.5,0)
-ax[0].set_ylabel('Predicted Z')
-ax[0].set_xlabel('<Z gas>')
+ax[0].set_ylim(-6,0)
+ax[0].set_xlim(-3.5,0)
+ax[0].set_xlabel('Predicted Z')
+ax[0].set_ylabel('<Z gas>')
 
 
-ax[1].plot(data['avg_logZ_stars_mass'],data['predicted_Z'],'ko')
+#ax[1].plot(data['avg_logZ_stars_mass'],data['predicted_Z'],'ko')
+ax[1].plot(data['predicted_Z'],data['avg_logZ_stars_mass'],'ko')
 ax[1].plot(x,x,'--',color='Grey',linewidth=2)
-ax[1].set_xlim(-6,0)
-ax[1].set_ylim(-3.5,0)
-ax[1].set_xlabel('<Z stars>')
-	
-ax[2].plot(data['avg_logZ_gas_weightvol'],data['avg_logZ_stars_mass'],'ko')
-ax[2].plot(x,x,'--',color='Grey',linewidth=2)
-ax[2].set_xlim(-6,0)
-ax[2].set_ylim(-3.5,0)
-ax[2].set_xlabel('<Z gas>')
-ax[2].set_ylabel('<Z stars>')
+ax[1].set_ylim(-6,0)
+ax[1].set_xlim(-3.5,0)
+ax[1].set_ylabel('<Z stars>')
+ax[1].set_xlabel('Predicted Z')
+
+#ax[2].plot(data['avg_logZ_gas_weightvol'],data['avg_logZ_stars_mass'],'ko')
+#ax[2].plot(x,x,'--',color='Grey',linewidth=2)
+#ax[2].set_xlim(-6,0)
+#ax[2].set_ylim(-3.5,0)
+#ax[2].set_xlabel('<Z gas>')
+#ax[2].set_ylabel('<Z stars>')
 
 ## Actual Bursty
 #bursty = [3,9,11,15,16,17,26,33,42,59,362]

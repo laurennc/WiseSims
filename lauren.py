@@ -228,3 +228,6 @@ def read_in_timesteps(filein):
 	timesteps['stamp'] = data[:,0]
 	timesteps['sim_time'] = data[:,1]
 	return timesteps
+
+def total_metallicity(data_sphere):
+	return data_sphere['Metallicity3']+data_sphere['Metallicity']

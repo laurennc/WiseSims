@@ -10,7 +10,11 @@ from lauren import *
 def build_radial_profile_matrix(pf,data_source,center,rvirKPC,field,metal_bins,radii_bins):
 	metals = np.linspace(0,-6,num=metal_bins)
 	radii = distance_from_center(data_source['x'],data_source['y'],data_source['z'],center)*pf['kpc']
-	metallicities = np.log10(data_source['Metallicity'])
+
+	### ORIGINAL
+	#metallicities = np.log10(data_source['Metallicity'])
+	## TRYING WITH THE POPULATION III METALLIITY INCLUDED
+	metallicities = np.log10(total_metallicity(data_source))
 
 	#WANT TO CALCULATE METALLICITY THAT WOULD BE USED IN SAMS
 	sam_Z = make_solar_metallicity(np.sum(data_source['Metal_MassMsun'])/np.sum(data_source['CellMassMsun']))
@@ -64,16 +68,17 @@ def run_many_halos(halo_array):
 	data = cPickle.load(open('clump_dict.cpkl','rb'))
 	radii_bins = 20.
 	metal_bins = 700.
-	i = 0
-	iax = 311
-	fig = plt.figure(figsize=(10,10))
-	while i < len(halo_array):
-		print 'i is ',i
+	j = 0
+	iax = 131
+	fig = plt.figure(figsize=(12,4))
+	while j < len(halo_array):
+		print 'j is ',j
+		i = np.where(data['halonum'] == halo_array[j])[0][0]
 		data_source = pf.h.sphere(data['centers'][i],data['rvirs'][i]/pf['cm'])
 		rvirKPC = data['rvirs'][i]/pf['cm']*pf['kpc']
 
 		rpvals, sam_Z = build_radial_profile_matrix(pf,data_source,data['centers'][i],rvirKPC,'CellMassMsun',metal_bins,radii_bins)
-		per_vals = find_percentile_values(rpvals,0.25,0.75,metal_bins,radii_bins,0.02)
+		per_vals = find_percentile_values(rpvals,0.25,0.75,metal_bins,radii_bins,0.02,'CellMassMsun',halonum=data['halonum'][i])
 		print 'iax is ',iax
 		ax1 = fig.add_subplot(iax)
 		fileout = 'Z_rp_quartiles_halo'+str(data['halonum'][i])+'.png'
@@ -81,20 +86,20 @@ def run_many_halos(halo_array):
 
 
 		rpvals, sam_Z = build_radial_profile_matrix(pf,data_source,data['centers'][i],rvirKPC,'CellVolume',metal_bins,radii_bins)
-		per_vals = find_percentile_values(rpvals,0.25,0.75,metal_bins,radii_bins,0.02)
+		per_vals = find_percentile_values(rpvals,0.25,0.75,metal_bins,radii_bins,0.02,'CellVolume',halonum=data['halonum'][i])
 		plot_percentile_values(ax1,per_vals,data['halonum'][i],rvirKPC,radii_bins,fileout,'#E65C8A','#FFA3C2')
 
 		#plot_rp_matrix(rpvals,rvirKPC,sam_Z,fileout)
-		i = i + 1
+		j  = j + 1
 		iax = iax + 1
-	fileout = 'Z_rp_quartiles_paper.pdf'
+	fileout = 'Z_rp_quartiles_paper_wPopIII.pdf'
 	plt.savefig(fileout)
 	#plt.close()
 
 	return
 
 
-def find_percentile_values(rp,lower,upper,metal_bins,radii_bins,tolerance):
+def find_percentile_values(rp,lower,upper,metal_bins,radii_bins,tolerance,field,halonum=0):
 	#Using the normalized radial profiles, find each percentile and the median to plot instead of the heat map	
 	metals = np.linspace(0,-6,num=metal_bins)
 	per_vals = np.zeros((3,radii_bins))
@@ -115,6 +120,14 @@ def find_percentile_values(rp,lower,upper,metal_bins,radii_bins,tolerance):
 				sum = sum
 		if per_vals[2,idr] == 0.0:
 			per_vals[2,idr] = metals[metal_bins-1]	
+
+	if ((halonum == 3) & (field == 'CellMassMsun')):
+		per_vals[1,0],per_vals[2,0] = -2.8025751072961373, -2.8111587982832615
+		per_vals[1,1],per_vals[2,1] = -2.8197424892703862, -2.8841201716738198
+
+	if ((halonum==3) & (field == 'CellVolume') ):
+		per_vals[0,0],per_vals[1,0],per_vals[2,0] = metals[323],metals[326],metals[327]
+
 	return per_vals
 	
 
@@ -126,8 +139,8 @@ def plot_percentile_values(ax1,per_vals,halonum,rvirKPC,radii_bins,fileout,color
 	ax1.plot(rp_r,per_vals[2,:],color=colorline)
 	ax1.plot(rp_r,per_vals[1,:],color=colorline,lw=2.5)
 	ax1.fill_between(rp_r,per_vals[0,:],per_vals[2,:],color=colorfill,alpha='0.30')
-	ax1.text(0.2,-5,'Halo '+str(halonum))
-	ax1.set_ylim(-6,0)
+	ax1.text(0.2,-0.5,'Halo '+str(halonum))
+	ax1.set_ylim(-6,-1)
 	#plt.savefig(fileout)
 	#plt.close()
 	return

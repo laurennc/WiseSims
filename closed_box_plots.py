@@ -12,12 +12,12 @@ fig,ax = plt.subplots(ylen,xlen)#,sharey=True)
 fig.set_size_inches(6,3)
 ax = ax.flat
 
-fileout = 'closedbox_paper_total_weightmvol.pdf'
+fileout = 'closedbox_paper_total_weightmvol_small.pdf'
 
 x = np.arange(-3.5,0.5,0.001)
 
 #ax[0].plot(data['avg_logZ_gas_weightvol'],data['predicted_Z'],'ko')
-ax[0].plot(data['predicted_Z'],data['avg_logZ_gas_weightvol'],'ko')
+ax[0].plot(data['predicted_Z'],data['avg_logZ_gas_weightvol_small'],'ko')
 ax[0].plot(x,x,'--',color='Grey',linewidth=2)
 ax[0].set_ylim(-6,0)
 ax[0].set_xlim(-3.5,0)

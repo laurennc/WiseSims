@@ -135,10 +135,10 @@ def plot_percentile_values(ax1,per_vals,halonum,rvirKPC,radii_bins,fileout,color
 	#y_low = per_vals[0,*], y_med=per_vals[1,*],y_high=per_vals[2,*]
 	dr = rvirKPC/radii_bins
 	rp_r = np.arange(radii_bins)*dr + dr/2.0
-	ax1.plot(rp_r,per_vals[0,:],color=colorline)
-	ax1.plot(rp_r,per_vals[2,:],color=colorline)
-	ax1.plot(rp_r,per_vals[1,:],color=colorline,lw=2.5)
-	ax1.fill_between(rp_r,per_vals[0,:],per_vals[2,:],color=colorfill,alpha='0.30')
+	ax1.plot(rp_r/rvirKPC,per_vals[0,:],color=colorline)
+	ax1.plot(rp_r/rvirKPC,per_vals[2,:],color=colorline)
+	ax1.plot(rp_r/rvirKPC,per_vals[1,:],color=colorline,lw=2.5)
+	ax1.fill_between(rp_r/rvirKPC,per_vals[0,:],per_vals[2,:],color=colorfill,alpha='0.30')
 	ax1.text(0.2,-0.5,'Halo '+str(halonum))
 	ax1.set_ylim(-6,-1)
 	#plt.savefig(fileout)

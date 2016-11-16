@@ -41,7 +41,7 @@ def build_values(pf,lastStepData):
 			halonums = np.append(halonums,lastStepData['halonum'][i])
 
 
-return avg_logZ_stars_mass_recent,avg_logZ_gas_weightvol_50r,predicted_Z_total,predicted_Z_50r,halonums
+	return avg_logZ_stars_mass_recent,avg_logZ_gas_weightvol_50r,predicted_Z_total,predicted_Z_50r,halonums
 
 
 pf = load('/media/caldisk/lauren/data/Wise/DD0062/output_0062')
